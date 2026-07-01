@@ -1,12 +1,14 @@
 package nus.iss.wellnessapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.databinding.ActivityDashboardBinding
-import kotlinx.coroutines.launch
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -14,51 +16,26 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        loadDashboard()
+        setupBottomNav()
     }
 
-    private fun loadDashboard() {
-
-        lifecycleScope.launch {
-
-            try {
-
-                val response =
-                    RetrofitClient.apiService.getDashboard(1)
-
-                binding.txtUsername.text =
-                    "Welcome, ${response.username}"
-
-                binding.txtMood.text =
-                    response.mood
-
-                binding.txtSleep.text =
-                    "${response.sleepHours} hrs"
-
-                binding.txtExercise.text =
-                    "${response.exerciseMinutes} mins"
-
-                binding.txtWater.text =
-                    "${response.waterIntake} L"
-
-                binding.txtSteps.text =
-                    "${response.steps.toInt()}"
-
-            } catch (e: Exception) {
-
-                Toast.makeText(
-                    this@DashboardActivity,
-                    e.message,
-                    Toast.LENGTH_LONG
-                ).show()
-
+    private fun setupBottomNav() {
+        binding.bottomNav.selectedItemId = R.id.nav_dashboard
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_dashboard ->{
+                    startActivity(Intent(this, DashboardActivity::class.java))// for dashboard
+                    true
+                }
+                R.id.nav_chat -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
+                    false  // don't highlight
+                }
+                else -> false
             }
-
         }
-
     }
 }

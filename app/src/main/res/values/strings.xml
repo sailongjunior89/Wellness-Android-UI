@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WellnessApp</string>
+    <string name="drawer_open">Open chat history</string>
+    <string name="drawer_close">Close chat history</string>
 </resources>
