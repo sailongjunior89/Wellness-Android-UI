@@ -15,6 +15,7 @@ object RetrofitClient {
     }
 
     private val client = OkHttpClient.Builder()
+        .addInterceptor(AuthInterceptor())
         .addInterceptor(logging)
         .build()
 
@@ -34,6 +35,11 @@ object RetrofitClient {
     /** Dashboard — Cecil */
     val dashboardApi: DashboardApiService by lazy {
         retrofit.create(DashboardApiService::class.java)
+    }
+
+    /** Login/Logout/Register - Junior */
+    val loginApi: LoginApiService by lazy {
+        retrofit.create(LoginApiService::class.java)
     }
 
     // ── Teammates: add your own ApiService files and register them here ──────
