@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import nus.iss.wellnessapp.storage.TokenManager
 
+//author: Junior
+
 class LogoutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -15,6 +15,8 @@ import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.LoginRequest
 import nus.iss.wellnessapp.storage.TokenManager
 
+//author: Junior
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var etUsername: EditText

@@ -1,5 +1,6 @@
 package nus.iss.wellnessapp.model
 
+//author: Junior
 data class RegisterRequest(
 
     val username: String,
