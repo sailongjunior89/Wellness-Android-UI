@@ -12,6 +12,7 @@ import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.RegisterRequest
 
+//author: Junior
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var etUsername: EditText

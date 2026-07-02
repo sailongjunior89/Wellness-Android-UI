@@ -1,5 +1,6 @@
 package nus.iss.wellnessapp.storage
 
+//author: Junior
 object TokenManager {
 
     private var token: String? = null
