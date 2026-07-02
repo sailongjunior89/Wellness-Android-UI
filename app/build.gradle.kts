@@ -12,12 +12,12 @@ val localProps = Properties().apply {
 
 android {
     namespace = "nus.iss.wellnessapp"
-    compileSdk = 37
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "nus.iss.wellnessapp"
         minSdk = 29
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -53,7 +53,9 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core.ktx)
+    implementation("androidx.core:core-ktx:1.17.0")
+    implementation("androidx.core:core:1.17.0")
+    //implementation(libs.androidx.core.ktx)
     implementation(libs.material)
 
     implementation("androidx.recyclerview:recyclerview:1.3.2")

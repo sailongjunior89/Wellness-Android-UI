@@ -26,10 +26,12 @@ class DashboardActivity : AppCompatActivity() {
         binding.bottomNav.selectedItemId = R.id.nav_dashboard
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_dashboard ->{
+                R.id.nav_dashboard -> true
+
+                /*R.id.nav_dashboard ->{
                     startActivity(Intent(this, DashboardActivity::class.java))// for dashboard
                     true
-                }
+                }*/
                 R.id.nav_chat -> {
                     startActivity(Intent(this, ChatActivity::class.java))
                     false  // don't highlight
