@@ -99,6 +99,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d("LOGIN", "User = ${loginResponse.username}")
 
                     TokenManager.saveToken(loginResponse.token)
+                    TokenManager.saveUserId(loginResponse.userId)
 
                     Toast.makeText(
                         this@LoginActivity,

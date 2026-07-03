@@ -1,19 +1,29 @@
 package nus.iss.wellnessapp.storage
 
-//author: Junior
+// Author: Junior
+// Updated: Htet Nandar — added userId storage alongside JWT token
+
 object TokenManager {
 
     private var token: String? = null
+    private var userId: Long   = -1L
 
-    fun saveToken(jwt: String) {
-        token = jwt
-    }
+    // ── Token ──────────────────────────────────────────────────────────────
 
-    fun getToken(): String? {
-        return token
-    }
+    fun saveToken(jwt: String) { token = jwt }
+    fun getToken(): String?    = token
+    fun clearToken()           { token = null }
 
-    fun clearToken() {
-        token = null
+    // ── UserId ─────────────────────────────────────────────────────────────
+
+    fun saveUserId(id: Long)  { userId = id }
+    fun getUserId(): Long     = userId
+    fun clearUserId()         { userId = -1L }
+
+    // ── Clear all (logout) ─────────────────────────────────────────────────
+
+    fun clear() {
+        token  = null
+        userId = -1L
     }
 }

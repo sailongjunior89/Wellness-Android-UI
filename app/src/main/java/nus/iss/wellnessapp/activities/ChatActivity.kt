@@ -15,11 +15,12 @@ import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.adapter.ChatMessageAdapter
 import nus.iss.wellnessapp.adapter.SessionAdapter
 import nus.iss.wellnessapp.api.RetrofitClient
+import nus.iss.wellnessapp.storage.TokenManager
 import nus.iss.wellnessapp.databinding.ActivityChatBinding
 import nus.iss.wellnessapp.model.ChatRequest
 import nus.iss.wellnessapp.model.UiChatMessage
 import retrofit2.HttpException
-
+// Author : Htet Nandar
 class ChatActivity : AppCompatActivity() {
 
     companion object {
@@ -32,7 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var sessionAdapter: SessionAdapter
     private lateinit var drawerToggle: ActionBarDrawerToggle
 
-    private val userId: Long = 1L
+    private val userId: Long get() = TokenManager.getUserId()
     private var sessionId: Long = -1L
     private var isFirstMessage: Boolean = true  // tracks whether session exists yet
 
@@ -168,7 +169,7 @@ class ChatActivity : AppCompatActivity() {
     private fun loadExistingMessages() {
         lifecycleScope.launch {
             try {
-                val messages = RetrofitClient.chatApi.getMessages(userId, sessionId)
+                val messages = RetrofitClient.chatApi.getMessages(sessionId)
                 messages.forEach { msg ->
                     chatAdapter.addMessage(UiChatMessage(
                         content = msg.content,
@@ -188,7 +189,7 @@ class ChatActivity : AppCompatActivity() {
     private fun loadSessionsIntoDrawer() {
         lifecycleScope.launch {
             try {
-                val sessions = RetrofitClient.chatApi.getSessions(userId)
+                val sessions = RetrofitClient.chatApi.getSessions()
                     .sortedByDescending { it.id }
                 sessionAdapter.setSessions(sessions)
             } catch (e: Exception) {
@@ -213,8 +214,7 @@ class ChatActivity : AppCompatActivity() {
                 if (isFirstMessage) {
                     val title = text.take(50)   // cap at 50 chars
                     val session = RetrofitClient.chatApi.createChatSession(
-                        userId = userId,
-                        title  = title
+                        title = title
                     )
                     sessionId = session.id
                     supportActionBar?.title = title
@@ -222,7 +222,6 @@ class ChatActivity : AppCompatActivity() {
                 }
 
                 val response = RetrofitClient.chatApi.sendMessage(
-                    userId    = userId,
                     sessionId = sessionId,
                     request   = ChatRequest(message = text)
                 )
