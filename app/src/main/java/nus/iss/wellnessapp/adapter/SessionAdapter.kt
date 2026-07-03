@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import nus.iss.wellnessapp.databinding.ItemSessionBinding
 import nus.iss.wellnessapp.model.ChatSessionResponse
+// Author : Htet Nandar
 
 class SessionAdapter(
     private val onSessionClick: (ChatSessionResponse) -> Unit
