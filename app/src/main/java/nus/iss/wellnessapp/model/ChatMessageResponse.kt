@@ -1,4 +1,5 @@
 package nus.iss.wellnessapp.model
+// Author : Htet Nandar
 
 data class ChatMessageResponse(
     val id: Long,

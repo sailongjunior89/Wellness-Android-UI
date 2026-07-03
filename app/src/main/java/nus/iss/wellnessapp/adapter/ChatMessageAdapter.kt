@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.model.UiChatMessage
-
+// Author : Htet Nandar
 class ChatMessageAdapter(
     private val messages: MutableList<UiChatMessage> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
