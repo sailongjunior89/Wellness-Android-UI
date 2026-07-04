@@ -13,6 +13,7 @@ import nus.iss.wellnessapp.databinding.ActivityDashboardBinding
 import android.widget.TextView
 import nus.iss.wellnessapp.api.DashboardApiService
 import nus.iss.wellnessapp.model.DashboardResponse
+import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +53,12 @@ class DashboardActivity : AppCompatActivity() {
 
         initViews()
         initRetrofit()
-        fetchDashboardData(userId = 1) // Fetching data for user ID 1 as seen in Postman
+
+        // Retrieve the active logged-in user's ID from TokenManager
+        val currentUserId = TokenManager.getUserId()
+
+        // Fetch dashboard statistics dynamically for the authenticated user
+        fetchDashboardData(userId = currentUserId.toInt())
 
     }
 
