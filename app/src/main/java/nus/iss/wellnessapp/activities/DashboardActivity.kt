@@ -10,19 +10,114 @@ import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.databinding.ActivityDashboardBinding
 
+import android.widget.TextView
+import nus.iss.wellnessapp.api.DashboardApiService
+import nus.iss.wellnessapp.model.DashboardResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+
 class DashboardActivity : AppCompatActivity() {
+
+    private lateinit var apiService: DashboardApiService
+
+    // UI Elements
+    private lateinit var txtUsername: TextView
+    private lateinit var txtFullName: TextView
+    private lateinit var txtMood: TextView
+    private lateinit var txtRecommendation: TextView
+    private lateinit var txtSteps: TextView
+    private lateinit var txtSleep: TextView
+    private lateinit var txtWater: TextView
+    private lateinit var txtExercise: TextView
+    private lateinit var txtAvgSteps: TextView
+    private lateinit var txtAvgSleep: TextView
+    private lateinit var txtAvgWater: TextView
+    private lateinit var txtAvgExercise: TextView
 
     private lateinit var binding: ActivityDashboardBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
-        setupBottomNav()
+        binding = ActivityDashboardBinding.inflate(layoutInflater) //Ntet
+        setContentView(binding.root) //Ntet
+
+        // Setup bottom navigation using the binding instance
+        setupBottomNav() //Ntet
+
+        //setContentView(R.layout.activity_dashboard)
+
+        initViews()
+        initRetrofit()
+        fetchDashboardData(userId = 1) // Fetching data for user ID 1 as seen in Postman
+
     }
 
-    private fun setupBottomNav() {
+    private fun initViews() {
+        txtUsername = findViewById(R.id.txtUsername)
+        txtFullName = findViewById(R.id.txtFullName)
+        txtMood = findViewById(R.id.txtMood)
+        txtRecommendation = findViewById(R.id.txtRecommendation)
+        txtSteps = findViewById(R.id.txtSteps)
+        txtSleep = findViewById(R.id.txtSleep)
+        txtWater = findViewById(R.id.txtWater)
+        txtExercise = findViewById(R.id.txtExercise)
+        txtAvgSteps = findViewById(R.id.txtAvgSteps)
+        txtAvgSleep = findViewById(R.id.txtAvgSleep)
+        txtAvgWater = findViewById(R.id.txtAvgWater)
+        txtAvgExercise = findViewById(R.id.txtAvgExercise)
+    }
+
+    private fun initRetrofit() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        apiService = retrofit.create(DashboardApiService::class.java)
+    }
+
+    private fun fetchDashboardData(userId: Int) {
+        apiService.getDashboardData(userId).enqueue(object : Callback<DashboardResponse> {
+            override fun onResponse(call: Call<DashboardResponse>, response: Response<DashboardResponse>) {
+                if (response.isSuccessful && response.body() != null) {
+                    val data = response.body()!!
+                    bindDataToUI(data)
+                } else {
+                    Toast.makeText(this@DashboardActivity, "Failed to parse data", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<DashboardResponse>, t: Throwable) {
+                Toast.makeText(this@DashboardActivity, "Network Error: ${t.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
+    private fun bindDataToUI(data: DashboardResponse) {
+        // Welcome Header info
+        txtUsername.text = "❤\uFE0F Welcome ❤\uFE0F,  ${data.username}"
+        txtFullName.text = data.fullName
+        txtMood.text = "Current Mood: ${data.mood}"
+        txtRecommendation.text = data.latestRecommendation
+
+        // Daily Stats Group
+        txtSteps.text = String.format("\uD83C\uDFC3\u200D♂\uFE0F\u200D➡\uFE0F  %,.0f steps", data.steps)
+        txtSleep.text = "\uD83C\uDF1B  ${data.sleepHours} hrs"
+        txtWater.text = "\uD83E\uDD5B  ${data.waterIntake} L"
+        txtExercise.text = "\uD83C\uDFCB\uFE0F ${data.exerciseMinutes} mins"
+
+        // Historical Trends Group
+        txtAvgSteps.text = String.format("%,.0f steps", data.avgSteps)
+        txtAvgSleep.text = "${data.avgSleepHours} hrs"
+        txtAvgWater.text = "${data.avgWaterIntake} L"
+        txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
+    }
+
+    private fun setupBottomNav() { // Ntet
         binding.bottomNav.selectedItemId = R.id.nav_dashboard
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
