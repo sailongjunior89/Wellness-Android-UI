@@ -89,6 +89,14 @@ class ChatActivity : AppCompatActivity() {
         binding.drawerLayout.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
 
+        binding.toolbar.post {
+            val navBtn = binding.toolbar.getChildAt(0)
+            val dp16 = (16 * resources.displayMetrics.density).toInt()
+            navBtn?.setPadding(dp16, dp16, dp16, dp16)
+            navBtn?.minimumWidth  = (56 * resources.displayMetrics.density).toInt()
+            navBtn?.minimumHeight = (56 * resources.displayMetrics.density).toInt()
+        }
+
         sessionAdapter = SessionAdapter { session ->
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             if (session.id != sessionId) {
@@ -148,8 +156,6 @@ class ChatActivity : AppCompatActivity() {
     }
 
     // ── Session management ─────────────────────────────────────────────────
-
-    /** Called when "New Chat" is tapped in the drawer. Resets to a fresh state. */
     private fun startNewChat() {
         chatAdapter.clearMessages()
         sessionId = -1L
@@ -173,13 +179,13 @@ class ChatActivity : AppCompatActivity() {
                 messages.forEach { msg ->
                     chatAdapter.addMessage(UiChatMessage(
                         content = msg.content,
-                        isUser  = msg.role == "user"     // fix: role, not senderRole
+                        isUser  = msg.senderRole == "user"     // fix: role, not senderRole
                     ))
                 }
                 scrollToBottom()
                 setInputEnabled(true)
             } catch (e: Exception) {
-                Log.e("ChatActivity", "loadMessages: ${errorMessage(e)}")
+                Log.e("ChatActivity", "loadMessages: ${e.message}")
                 Toast.makeText(this@ChatActivity, "Failed to load messages", Toast.LENGTH_SHORT).show()
                 setInputEnabled(true)
             }
@@ -193,7 +199,7 @@ class ChatActivity : AppCompatActivity() {
                     .sortedByDescending { it.id }
                 sessionAdapter.setSessions(sessions)
             } catch (e: Exception) {
-                Log.e("ChatActivity", "loadSessions: ${errorMessage(e)}")
+                Log.e("ChatActivity", "loadSessions: ${e.message}")
             }
         }
     }
@@ -228,7 +234,10 @@ class ChatActivity : AppCompatActivity() {
                 chatAdapter.addMessage(UiChatMessage(content = response.reply, isUser = false))
                 scrollToBottom()
             } catch (e: Exception) {
-                Toast.makeText(this@ChatActivity, "Error: ${errorMessage(e)}", Toast.LENGTH_LONG).show()
+                val userMsg = friendlyError(e)
+                chatAdapter.addMessage(UiChatMessage(content = userMsg, isUser = false))
+                scrollToBottom()
+                Log.e("ChatActivity", "sendMessage error: ${e.message}", e)
             } finally {
                 setInputEnabled(true)
                 binding.txtTyping.visibility = View.GONE
@@ -250,7 +259,18 @@ class ChatActivity : AppCompatActivity() {
         binding.btnSend.isEnabled   = enabled
     }
 
-    private fun errorMessage(e: Exception): String =
-        if (e is HttpException) e.response()?.errorBody()?.string() ?: e.message ?: "HTTP ${e.code()}"
-        else e.message ?: "Unknown error"
+    /** Returns a friendly message instead of raw HTTP errors. */
+    private fun friendlyError(e: Exception): String = when {
+        e is HttpException && e.code() in 500..599 ->
+            "⚠️ The wellness AI service is currently unavailable. Please try again later."
+        e is HttpException && e.code() == 401 ->
+            "Your session has expired. Please log in again."
+        e is HttpException && e.code() == 403 ->
+            "You don't have permission to perform this action."
+        e is java.net.ConnectException || e is java.net.SocketTimeoutException ||
+        e is java.net.UnknownHostException ->
+            "⚠️ Cannot reach the server. Please check your network connection."
+        else ->
+            "Something went wrong. Please try again."
+    }
 }

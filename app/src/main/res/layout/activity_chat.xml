@@ -16,10 +16,14 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="64dp"
             android:background="#4CAF50"
+            android:contentInsetStart="0dp"
+            android:minHeight="64dp"
             android:title="Wellness Assistant"
-            android:titleTextColor="#FFFFFF" />
+            android:titleTextColor="#FFFFFF"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIconTint="#FFFFFF" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerChat"
