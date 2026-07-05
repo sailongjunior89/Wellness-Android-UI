@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -97,17 +98,27 @@ class ChatActivity : AppCompatActivity() {
             navBtn?.minimumHeight = (56 * resources.displayMetrics.density).toInt()
         }
 
-        sessionAdapter = SessionAdapter { session ->
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            if (session.id != sessionId) {
-                sessionId = session.id
-                isFirstMessage = false
-                supportActionBar?.title = session.title
-                chatAdapter.clearMessages()
-                setInputEnabled(false)
-                loadExistingMessages()
+        sessionAdapter = SessionAdapter(
+            onSessionClick = { session ->
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                if (session.id != sessionId) {
+                    sessionId = session.id
+                    isFirstMessage = false
+                    supportActionBar?.title = session.title
+                    chatAdapter.clearMessages()
+                    setInputEnabled(false)
+                    loadExistingMessages()
+                }
+            },
+            onDeleteClick = { session ->
+                AlertDialog.Builder(this)
+                    .setTitle("Delete conversation")
+                    .setMessage("Delete \"${session.title}\"? This cannot be undone.")
+                    .setPositiveButton("Delete") { _, _ -> deleteSession(session.id) }
+                    .setNegativeButton("Cancel", null)
+                    .show()
             }
-        }
+        )
         binding.recyclerSessions.layoutManager = LinearLayoutManager(this)
         binding.recyclerSessions.adapter = sessionAdapter
 
@@ -188,6 +199,23 @@ class ChatActivity : AppCompatActivity() {
                 Log.e("ChatActivity", "loadMessages: ${e.message}")
                 Toast.makeText(this@ChatActivity, "Failed to load messages", Toast.LENGTH_SHORT).show()
                 setInputEnabled(true)
+            }
+        }
+    }
+
+    private fun deleteSession(targetSessionId: Long) {
+        lifecycleScope.launch {
+            try {
+                RetrofitClient.chatApi.deleteSession(targetSessionId)
+                sessionAdapter.removeSession(targetSessionId)
+                // If the deleted session is currently open, start a new chat
+                if (targetSessionId == sessionId) {
+                    startNewChat()
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            } catch (e: Exception) {
+                Log.e("ChatActivity", "deleteSession: ${e.message}")
+                Toast.makeText(this@ChatActivity, "Failed to delete conversation", Toast.LENGTH_SHORT).show()
             }
         }
     }
