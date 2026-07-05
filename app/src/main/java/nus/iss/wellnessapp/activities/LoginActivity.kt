@@ -14,6 +14,7 @@ import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.LoginRequest
 import nus.iss.wellnessapp.storage.TokenManager
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 //author: Junior
 
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var tvRegister: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen() //replace android logo
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
