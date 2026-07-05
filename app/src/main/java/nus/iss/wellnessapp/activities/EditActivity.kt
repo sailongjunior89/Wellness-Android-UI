@@ -28,13 +28,19 @@ class EditActivity : AppCompatActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.apply {
+            title = "Edit record"
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
+
         val recordId = intent.getLongExtra("recordId", -1L)
         getRecord(recordId)
 
-        binding.btnBack.setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
-            startActivity(intent)
-        }
+//        binding.btnBack.setOnClickListener {
+//            val intent = Intent(this, DashboardActivity::class.java)
+//            startActivity(intent)
+//        }
 
         binding.etRecordDate.setOnClickListener {
             showDatePicker()
@@ -46,6 +52,11 @@ class EditActivity : AppCompatActivity() {
             val position = intent.getIntExtra("position", -1)
             updateRecord()
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
     }
 
     private fun showLoading(isLoading: Boolean) {

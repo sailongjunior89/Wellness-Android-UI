@@ -27,6 +27,11 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_list_view)
+        supportActionBar?.apply {
+            title = "Select for edit"
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -40,15 +45,13 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         loadRecords()
     }
 
-    override fun onItemClick(av: AdapterView<*>?, v: View, pos: Int, id: Long) {
-//        Toast.makeText(this, "${pos} ${id}", Toast.LENGTH_SHORT).show()
-        val selectedRecord = records[pos]
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
+    }
 
-//        Toast.makeText(
-//            this,
-//            selectedRecord.category,
-//            Toast.LENGTH_SHORT
-//        ).show()
+    override fun onItemClick(av: AdapterView<*>?, v: View, pos: Int, id: Long) {
+        val selectedRecord = records[pos]
 
         val intent = Intent(this, EditActivity::class.java)
         intent.putExtra("recordId", selectedRecord.id)
@@ -61,11 +64,8 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     private fun loadRecords() {
         lifecycleScope.launch {
             try {
-//                Log.d("PWT", "Before API")
 
                 val response = RetrofitClient.recordApi.getRecordsByUserId(1L)
-
-//                Log.d("PWT", "HTTP Code = ${response.code()}")
 
                 if (response.isSuccessful) {
                     records = response.body() ?: emptyList()
@@ -77,7 +77,6 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                 }
 
             } catch (e: Exception) {
-                Log.e("PWT", "API crash", e)
                 Toast.makeText(
                     this@ListViewActivity,
                     e.message,
