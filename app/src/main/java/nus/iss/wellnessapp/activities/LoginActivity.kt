@@ -100,6 +100,8 @@ class LoginActivity : AppCompatActivity() {
 
                     TokenManager.saveToken(loginResponse.token)
                     TokenManager.saveUserId(loginResponse.userId)
+                    TokenManager.saveUsername(loginResponse.username)
+                    TokenManager.saveEmail(loginResponse.email)
 
                     Toast.makeText(
                         this@LoginActivity,
