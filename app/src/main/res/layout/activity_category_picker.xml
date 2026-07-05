@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="What would you like to log?"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+    <Button android:id="@+id/btnSleep"    android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🌛  Sleep" />
+    <Button android:id="@+id/btnExercise" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🏋️  Exercise" />
+    <Button android:id="@+id/btnMood"     android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🙂  Mood" />
+    <Button android:id="@+id/btnWater"    android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🥛  Water" />
+    <Button android:id="@+id/btnSteps"    android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🏃  Steps" />
+
+    <Button android:id="@+id/btnBack" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="Back" android:layout_marginTop="24dp" />
+</LinearLayout>

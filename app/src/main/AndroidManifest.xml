@@ -38,6 +38,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+<!--Author: Si Hua, Why: Android refuses to launch unregistered activities. So add this-->
+        <activity android:name=".activities.AddRecordActivity" />
+        <activity android:name=".activities.CategoryPickerActivity" />
+        <activity android:name=".activities.LogCategoryActivity" />
+
     </application>
 
 </manifest>
