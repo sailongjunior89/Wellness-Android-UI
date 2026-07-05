@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.WellnessApp.Splash"
+        parent="Theme.SplashScreen">
+
+        <!-- Splash background -->
+        <item name="android:windowSplashScreenBackground">#FFF7FF</item>
+
+        <!-- Your app logo -->
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/wellness_logo</item>
+
+        <!-- Theme after splash -->
+        <item name="postSplashScreenTheme">@style/Theme.WellnessApp</item>
+
+    </style>
+
+</resources>
