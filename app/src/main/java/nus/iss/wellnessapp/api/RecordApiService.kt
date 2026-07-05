@@ -15,7 +15,6 @@ import retrofit2.http.Path
 interface RecordApiService {
     @POST("api/wellness/records")
     fun addRecord(
-        @Header("Authorization") token: String,
         @Body record: WellnessRecordRequest
     ): Call<Void>
 

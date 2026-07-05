@@ -18,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
+import nus.iss.wellnessapp.api.RetrofitClient
 
 class LogCategoryActivity : AppCompatActivity() {
 
@@ -89,12 +90,7 @@ class LogCategoryActivity : AppCompatActivity() {
     }
 
     private fun saveRecord(category: String, value: Double, config: CategoryConfig) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val api = retrofit.create(RecordApiService::class.java)
-        val token = "Bearer " + TokenManager.getToken()
+        val api = RetrofitClient.recordApi
 
         val record = WellnessRecordRequest(
             TokenManager.getUserId(),
@@ -106,7 +102,7 @@ class LogCategoryActivity : AppCompatActivity() {
             recordDate = java.time.LocalDate.now().toString()
         )
 
-        api.addRecord(token, record).enqueue(object : Callback<Void> {
+        api.addRecord(record).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
                     // Backend upsert guarantees this UPDATES today's record if one exists
