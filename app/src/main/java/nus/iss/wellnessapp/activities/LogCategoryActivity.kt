@@ -71,7 +71,7 @@ class LogCategoryActivity : AppCompatActivity() {
                 }
             }
         }
-        
+
         findViewById<Button>(R.id.btnBack).setOnClickListener { finish() }
 
         findViewById<Button>(R.id.btnSaveCategory).setOnClickListener {
