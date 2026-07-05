@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
 
@@ -17,6 +18,9 @@ object RetrofitClient {
     private val client = OkHttpClient.Builder()
         .addInterceptor(AuthInterceptor())
         .addInterceptor(logging)
+        .connectTimeout(15, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)   // AI responses can take 20-40 s
+        .writeTimeout(15, TimeUnit.SECONDS)
         .build()
 
     private val retrofit: Retrofit by lazy {
@@ -37,6 +41,11 @@ object RetrofitClient {
         retrofit.create(DashboardApiService::class.java)
     }
 
+    /** Wellness records — Si Hua */
+    val recordApi: RecordApiService by lazy {
+        retrofit.create(RecordApiService::class.java)
+    }
+
     /** Login/Logout/Register - Junior */
     val loginApi: LoginApiService by lazy {
         Retrofit.Builder()
@@ -44,6 +53,9 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(LoginApiService::class.java)
+
+
+
     }
 
     // ── Teammates: add your own ApiService files and register them here ──────

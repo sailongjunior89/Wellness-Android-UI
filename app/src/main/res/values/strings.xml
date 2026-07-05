@@ -2,4 +2,9 @@
     <string name="app_name">WellnessApp</string>
     <string name="drawer_open">Open chat history</string>
     <string name="drawer_close">Close chat history</string>
+
+    <string name="profile_avatar">Profile Avatar</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_email">email@example.com</string>
+    <string name="logout">Logout</string>
 </resources>

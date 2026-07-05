@@ -5,7 +5,7 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
@@ -15,11 +15,11 @@ import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.adapter.ChatMessageAdapter
 import nus.iss.wellnessapp.adapter.SessionAdapter
 import nus.iss.wellnessapp.api.RetrofitClient
-import nus.iss.wellnessapp.storage.TokenManager
 import nus.iss.wellnessapp.databinding.ActivityChatBinding
 import nus.iss.wellnessapp.model.ChatRequest
 import nus.iss.wellnessapp.model.UiChatMessage
 import retrofit2.HttpException
+
 // Author : Htet Nandar
 class ChatActivity : AppCompatActivity() {
 
@@ -31,9 +31,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var chatAdapter: ChatMessageAdapter
     private lateinit var sessionAdapter: SessionAdapter
-    private lateinit var drawerToggle: ActionBarDrawerToggle
 
-    private val userId: Long get() = TokenManager.getUserId()
     private var sessionId: Long = -1L
     private var isFirstMessage: Boolean = true  // tracks whether session exists yet
 
@@ -53,13 +51,13 @@ class ChatActivity : AppCompatActivity() {
             // Opening an existing session from drawer
             sessionId = existingSessionId
             isFirstMessage = false
-            supportActionBar?.title = intent.getStringExtra(EXTRA_SESSION_TITLE) ?: "Wellness Chat"
+            binding.toolbarTitle.text = intent.getStringExtra(EXTRA_SESSION_TITLE) ?: "Wellness Chat"
             setInputEnabled(false)
             loadExistingMessages()
         } else {
             // New chat — show greeting locally, no API call yet
             isFirstMessage = true
-            supportActionBar?.title = "New Chat"
+            binding.toolbarTitle.text = "New Chat"
             chatAdapter.addMessage(
                 UiChatMessage(
                     content = "Hi! I'm your wellness assistant. Ask me anything about nutrition, sleep, exercise, or mental health.",
@@ -73,33 +71,39 @@ class ChatActivity : AppCompatActivity() {
     // ── Toolbar + hamburger ────────────────────────────────────────────────
 
     private fun setupToolbar() {
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
+        // toolbar is a plain LinearLayout — no setSupportActionBar needed
+        binding.toolbarTitle.text = "Wellness Assistant"
     }
 
     private fun setupDrawer() {
-        drawerToggle = ActionBarDrawerToggle(
-            this,
-            binding.drawerLayout,
-            binding.toolbar,
-            R.string.drawer_open,
-            R.string.drawer_close
-        )
-        binding.drawerLayout.addDrawerListener(drawerToggle)
-        drawerToggle.syncState()
-
-        sessionAdapter = SessionAdapter { session ->
-            binding.drawerLayout.closeDrawer(GravityCompat.START)
-            if (session.id != sessionId) {
-                sessionId = session.id
-                isFirstMessage = false
-                supportActionBar?.title = session.title
-                chatAdapter.clearMessages()
-                setInputEnabled(false)
-                loadExistingMessages()
-            }
+        binding.btnHamburger.setOnClickListener {
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START))
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            else
+                binding.drawerLayout.openDrawer(GravityCompat.START)
         }
+
+        sessionAdapter = SessionAdapter(
+            onSessionClick = { session ->
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+                if (session.id != sessionId) {
+                    sessionId = session.id
+                    isFirstMessage = false
+                    binding.toolbarTitle.text = session.title
+                    chatAdapter.clearMessages()
+                    setInputEnabled(false)
+                    loadExistingMessages()
+                }
+            },
+            onDeleteClick = { session ->
+                AlertDialog.Builder(this)
+                    .setTitle("Delete conversation")
+                    .setMessage("Delete \"${session.title}\"? This cannot be undone.")
+                    .setPositiveButton("Delete") { _, _ -> deleteSession(session.id) }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+            }
+        )
         binding.recyclerSessions.layoutManager = LinearLayoutManager(this)
         binding.recyclerSessions.adapter = sessionAdapter
 
@@ -149,12 +153,11 @@ class ChatActivity : AppCompatActivity() {
 
     // ── Session management ─────────────────────────────────────────────────
 
-    /** Called when "New Chat" is tapped in the drawer. Resets to a fresh state. */
     private fun startNewChat() {
         chatAdapter.clearMessages()
         sessionId = -1L
         isFirstMessage = true
-        supportActionBar?.title = "New Chat"
+        binding.toolbarTitle.text = "New Chat"
         chatAdapter.addMessage(
             UiChatMessage(
                 content = "Hi! I'm your wellness assistant. Ask me anything about nutrition, sleep, exercise, or mental health.",
@@ -173,15 +176,32 @@ class ChatActivity : AppCompatActivity() {
                 messages.forEach { msg ->
                     chatAdapter.addMessage(UiChatMessage(
                         content = msg.content,
-                        isUser  = msg.role == "user"     // fix: role, not senderRole
+                        isUser  = msg.senderRole == "user"
                     ))
                 }
                 scrollToBottom()
                 setInputEnabled(true)
             } catch (e: Exception) {
-                Log.e("ChatActivity", "loadMessages: ${errorMessage(e)}")
+                Log.e("ChatActivity", "loadMessages: ${e.message}")
                 Toast.makeText(this@ChatActivity, "Failed to load messages", Toast.LENGTH_SHORT).show()
                 setInputEnabled(true)
+            }
+        }
+    }
+
+    private fun deleteSession(targetSessionId: Long) {
+        lifecycleScope.launch {
+            try {
+                RetrofitClient.chatApi.deleteSession(targetSessionId)
+                sessionAdapter.removeSession(targetSessionId)
+                // If the deleted session is currently open, start a new chat
+                if (targetSessionId == sessionId) {
+                    startNewChat()
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            } catch (e: Exception) {
+                Log.e("ChatActivity", "deleteSession: ${e.message}")
+                Toast.makeText(this@ChatActivity, "Failed to delete conversation", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -193,7 +213,7 @@ class ChatActivity : AppCompatActivity() {
                     .sortedByDescending { it.id }
                 sessionAdapter.setSessions(sessions)
             } catch (e: Exception) {
-                Log.e("ChatActivity", "loadSessions: ${errorMessage(e)}")
+                Log.e("ChatActivity", "loadSessions: ${e.message}")
             }
         }
     }
@@ -213,11 +233,9 @@ class ChatActivity : AppCompatActivity() {
                 // First message of a new chat → create session with the message text as title
                 if (isFirstMessage) {
                     val title = text.take(50)   // cap at 50 chars
-                    val session = RetrofitClient.chatApi.createChatSession(
-                        title = title
-                    )
+                    val session = RetrofitClient.chatApi.createChatSession(title = title)
                     sessionId = session.id
-                    supportActionBar?.title = title
+                    binding.toolbarTitle.text = title
                     isFirstMessage = false
                 }
 
@@ -228,7 +246,10 @@ class ChatActivity : AppCompatActivity() {
                 chatAdapter.addMessage(UiChatMessage(content = response.reply, isUser = false))
                 scrollToBottom()
             } catch (e: Exception) {
-                Toast.makeText(this@ChatActivity, "Error: ${errorMessage(e)}", Toast.LENGTH_LONG).show()
+                val userMsg = friendlyError(e)
+                chatAdapter.addMessage(UiChatMessage(content = userMsg, isUser = false))
+                scrollToBottom()
+                Log.e("ChatActivity", "sendMessage error: ${e.message}", e)
             } finally {
                 setInputEnabled(true)
                 binding.txtTyping.visibility = View.GONE
@@ -250,7 +271,18 @@ class ChatActivity : AppCompatActivity() {
         binding.btnSend.isEnabled   = enabled
     }
 
-    private fun errorMessage(e: Exception): String =
-        if (e is HttpException) e.response()?.errorBody()?.string() ?: e.message ?: "HTTP ${e.code()}"
-        else e.message ?: "Unknown error"
+    private fun friendlyError(e: Exception): String = when (e) {
+        is HttpException -> when (e.code()) {
+            in 500..599 -> "⚠️ The wellness AI service is currently unavailable. Please try again later."
+            401 -> "Your session has expired. Please log in again."
+            403 -> "You don't have permission to perform this action."
+            else -> "Something went wrong. Please try again."
+        }
+        is java.net.ConnectException,
+        is java.net.SocketTimeoutException,
+        is java.net.UnknownHostException ->
+            "⚠️ Cannot reach the server. Please check your network connection."
+        else ->
+            "Something went wrong. Please try again."
+    }
 }

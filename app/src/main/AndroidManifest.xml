@@ -18,6 +18,7 @@
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true"
+            android:theme="@style/Theme.WellnessApp.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,17 +27,31 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.RegisterActivity" />
-        <activity
-            android:name=".activities.DashboardActivity"
-            android:exported="true" />
+
+        <activity android:name=".activities.ListViewActivity"
+            android:theme="@style/Theme.WellnessApp.ActionBar" />
+        
+        <activity android:name=".activities.EditActivity"
+            android:theme="@style/Theme.WellnessApp.ActionBar" />
+
+        <activity android:name=".activities.DashboardActivity"
+            android:exported="true"/>
+
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".activities.HistoryTrendActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        
+<!--Author: Si Hua, Why: Android refuses to launch unregistered activities. So add this-->
+        <activity android:name=".activities.AddRecordActivity" />
+        <activity android:name=".activities.CategoryPickerActivity" />
+        <activity android:name=".activities.LogCategoryActivity" />
+
     </application>
 
 </manifest>

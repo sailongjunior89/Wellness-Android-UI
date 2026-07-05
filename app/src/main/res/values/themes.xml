@@ -5,5 +5,10 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <style name="Theme.WellnessApp.ActionBar" parent="Theme.Material3.DayNight">
+        <!-- Inherits Material3 theme with Action Bar -->
+    </style>
+
     <style name="Theme.WellnessApp" parent="Base.Theme.WellnessApp" />
+
 </resources>

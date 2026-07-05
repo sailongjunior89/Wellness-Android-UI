@@ -55,17 +55,20 @@
 
                 </LinearLayout>
 
-                <!-- Decorative Profile Icon Avatar at the top right edge -->
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgProfile"
                     android:layout_width="44dp"
                     android:layout_height="44dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
+                    android:layout_centerVertical="true"
                     android:background="#E0E6ED"
                     android:padding="8dp"
                     android:src="@android:drawable/ic_menu_myplaces"
                     android:tint="#4F46E5"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Profile"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"/>
 
             </RelativeLayout>
 
@@ -406,6 +409,18 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+            <Button
+                android:id="@+id/btnAddRecord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="＋ Add Record" />
+            <Button
+                android:id="@+id/btnUpdateRecord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Update Record" />
         </LinearLayout>
     </ScrollView>
 
