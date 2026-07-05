@@ -2,6 +2,7 @@ package nus.iss.wellnessapp.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -49,6 +50,10 @@ class DashboardActivity : AppCompatActivity() {
         setupBottomNav() //Ntet
 
         //setContentView(R.layout.activity_dashboard)
+        //Author: Si Hua
+        findViewById<Button>(R.id.btnAddRecord).setOnClickListener {
+            startActivity(Intent(this, CategoryPickerActivity::class.java))
+        }
 
         initViews()
         initRetrofit()
@@ -97,6 +102,10 @@ class DashboardActivity : AppCompatActivity() {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        fetchDashboardData(userId = 1)
+    }
     private fun bindDataToUI(data: DashboardResponse) {
         // Welcome Header info
         txtUsername.text = "❤\uFE0F Welcome ❤\uFE0F,  ${data.username}"
@@ -113,7 +122,7 @@ class DashboardActivity : AppCompatActivity() {
         // Historical Trends Group
         txtAvgSteps.text = String.format("%,.0f steps", data.avgSteps)
         txtAvgSleep.text = "${data.avgSleepHours} hrs"
-        txtAvgWater.text = "${data.avgWaterIntake} L"
+        txtAvgWater.text = String.format("%.1f L", data.avgWaterIntake ?: 0.0)
         txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
     }
 
