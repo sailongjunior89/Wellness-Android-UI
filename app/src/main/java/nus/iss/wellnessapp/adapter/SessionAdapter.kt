@@ -8,7 +8,8 @@ import nus.iss.wellnessapp.model.ChatSessionResponse
 // Author : Htet Nandar
 
 class SessionAdapter(
-    private val onSessionClick: (ChatSessionResponse) -> Unit
+    private val onSessionClick: (ChatSessionResponse) -> Unit,
+    private val onDeleteClick: (ChatSessionResponse) -> Unit
 ) : RecyclerView.Adapter<SessionAdapter.SessionViewHolder>() {
 
     private val sessions = mutableListOf<ChatSessionResponse>()
@@ -17,6 +18,14 @@ class SessionAdapter(
         sessions.clear()
         sessions.addAll(list)
         notifyDataSetChanged()
+    }
+
+    fun removeSession(sessionId: Long) {
+        val index = sessions.indexOfFirst { it.id == sessionId }
+        if (index != -1) {
+            sessions.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SessionViewHolder {
@@ -39,7 +48,6 @@ class SessionAdapter(
         fun bind(session: ChatSessionResponse) {
             binding.txtSessionTitle.text = session.title
 
-            // Format createdAt: [year, month, day, hour, minute, ...]
             binding.txtSessionDate.text = if (session.createdAt.size >= 3) {
                 val year  = session.createdAt[0]
                 val month = session.createdAt[1]
@@ -50,6 +58,7 @@ class SessionAdapter(
             }
 
             binding.root.setOnClickListener { onSessionClick(session) }
+            binding.btnDeleteSession.setOnClickListener { onDeleteClick(session) }
         }
     }
 }
