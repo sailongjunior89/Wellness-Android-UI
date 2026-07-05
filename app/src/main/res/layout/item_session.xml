@@ -43,13 +43,15 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+    <ImageButton
+        android:id="@+id/btnDeleteSession"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_vertical"
-        android:src="@android:drawable/arrow_up_float"
-        android:rotation="90"
-        android:contentDescription="Open"
-        app:tint="#CCCCCC" />
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Delete session"
+        android:src="@android:drawable/ic_menu_delete"
+        android:padding="8dp"
+        app:tint="#E53935" />
 
 </LinearLayout>
