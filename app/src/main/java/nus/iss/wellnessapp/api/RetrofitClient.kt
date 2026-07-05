@@ -37,6 +37,11 @@ object RetrofitClient {
         retrofit.create(DashboardApiService::class.java)
     }
 
+    /** Wellness records — Si Hua */
+    val recordApi: RecordApiService by lazy {
+        retrofit.create(RecordApiService::class.java)
+    }
+
     /** Login/Logout/Register - Junior */
     val loginApi: LoginApiService by lazy {
         Retrofit.Builder()
@@ -44,6 +49,9 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(LoginApiService::class.java)
+
+
+
     }
 
     // ── Teammates: add your own ApiService files and register them here ──────

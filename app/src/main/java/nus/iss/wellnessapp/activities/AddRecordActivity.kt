@@ -6,14 +6,13 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import nus.iss.wellnessapp.R
-import nus.iss.wellnessapp.api.RecordApiService
+import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.WellnessRecordRequest
 import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 
 class AddRecordActivity : AppCompatActivity() {
 
@@ -47,16 +46,8 @@ class AddRecordActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 2. Build Retrofit — copy base URL from your teammates' service.
-            //    10.0.2.2 is how the emulator reaches localhost on your Mac.
-            val retrofit = Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:8080/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-            val api = retrofit.create(RecordApiService::class.java)
-
-            // 3. Get the JWT the same way DashboardActivity does (check storage package)
-            val token = "Bearer " + TokenManager.getToken()
+            //2.
+            val api = RetrofitClient.recordApi
 
             // 4. Async call — enqueue runs off the main thread; Android forbids
             //    network calls on the UI thread
@@ -76,7 +67,7 @@ class AddRecordActivity : AppCompatActivity() {
             var completed = 0
             var failed = 0
             records.forEach { record ->
-                api.addRecord(token, record).enqueue(object : Callback<Void> {
+                api.addRecord(record).enqueue(object : Callback<Void> {
                     override fun onResponse(call: Call<Void>, response: Response<Void>) {
                         if (response.isSuccessful) completed++ else failed++
                         showResultWhenDone()
