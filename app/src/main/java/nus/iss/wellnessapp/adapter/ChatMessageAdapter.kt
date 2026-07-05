@@ -59,7 +59,8 @@ class ChatMessageAdapter(
     }
 
     fun clearMessages() {
+        val count = messages.size
         messages.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0, count)
     }
 }
