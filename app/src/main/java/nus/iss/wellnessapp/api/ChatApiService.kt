@@ -5,6 +5,7 @@ import nus.iss.wellnessapp.model.ChatRequest
 import nus.iss.wellnessapp.model.ChatResponse
 import nus.iss.wellnessapp.model.ChatSessionResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -30,4 +31,9 @@ interface ChatApiService {
     suspend fun getMessages(
         @Path("sessionId") sessionId: Long
     ): List<ChatMessageResponse>
+
+    @DELETE("api/chat/sessions/{sessionId}")
+    suspend fun deleteSession(
+        @Path("sessionId") sessionId: Long
+    )
 }
