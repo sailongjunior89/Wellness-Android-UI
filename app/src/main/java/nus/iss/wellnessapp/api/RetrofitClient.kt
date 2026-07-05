@@ -37,6 +37,9 @@ object RetrofitClient {
         retrofit.create(DashboardApiService::class.java)
     }
 
+    val recordApi: RecordApiService by lazy {
+        retrofit.create(RecordApiService::class.java)
+    }
     /** Login/Logout/Register - Junior */
     val loginApi: LoginApiService by lazy {
         Retrofit.Builder()

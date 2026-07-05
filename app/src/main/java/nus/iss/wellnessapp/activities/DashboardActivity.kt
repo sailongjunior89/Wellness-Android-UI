@@ -55,6 +55,10 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, CategoryPickerActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnUpdateRecord).setOnClickListener {
+            startActivity(Intent(this, ListViewActivity::class.java))
+        }
+
         initViews()
         initRetrofit()
         fetchDashboardData(userId = 1) // Fetching data for user ID 1 as seen in Postman

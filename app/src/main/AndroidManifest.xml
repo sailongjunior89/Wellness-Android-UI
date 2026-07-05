@@ -29,7 +29,8 @@
         </activity>
 
         <activity android:name=".activities.RegisterActivity" />
-
+        <activity android:name=".activities.ListViewActivity" />
+        <activity android:name=".activities.EditActivity" />
         <activity android:name=".activities.DashboardActivity"
             android:exported="true"/>
 
