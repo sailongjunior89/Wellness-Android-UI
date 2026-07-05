@@ -12,6 +12,7 @@ import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.databinding.ActivityDashboardBinding
 
 import android.widget.TextView
+import com.google.android.material.imageview.ShapeableImageView
 import nus.iss.wellnessapp.api.DashboardApiService
 import nus.iss.wellnessapp.model.DashboardResponse
 import retrofit2.Call
@@ -19,6 +20,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import android.widget.PopupMenu
+import androidx.appcompat.app.AlertDialog
+import nus.iss.wellnessapp.activities.LoginActivity
+import nus.iss.wellnessapp.storage.TokenManager
+import android.view.LayoutInflater
+import android.view.Gravity
+import android.widget.PopupWindow
+import nus.iss.wellnessapp.model.LogoutResponse
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -37,6 +46,15 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var txtAvgSleep: TextView
     private lateinit var txtAvgWater: TextView
     private lateinit var txtAvgExercise: TextView
+
+    //logout: Junior
+    private lateinit var imgProfile: ShapeableImageView
+
+    private val username: String
+        get() = TokenManager.getUsername()
+
+    private val email: String
+        get() = TokenManager.getEmail()
 
     private lateinit var binding: ActivityDashboardBinding
 
@@ -59,6 +77,12 @@ class DashboardActivity : AppCompatActivity() {
         initRetrofit()
         fetchDashboardData(userId = 1) // Fetching data for user ID 1 as seen in Postman
 
+        //logout: Junior
+        imgProfile = findViewById(R.id.imgProfile)
+
+        imgProfile.setOnClickListener {
+            showProfilePopup()
+        }
     }
 
     private fun initViews() {
@@ -143,5 +167,109 @@ class DashboardActivity : AppCompatActivity() {
                 else -> false
             }
         }
+    }
+
+    //profile showing : Junior
+    private fun showProfilePopup() {
+
+        val view = LayoutInflater.from(this)
+            .inflate(R.layout.profile_popup, null)
+
+        val popup = PopupWindow(
+            view,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        val txtUsername = view.findViewById<TextView>(R.id.txtPopupUsername)
+        val txtEmail = view.findViewById<TextView>(R.id.txtPopupEmail)
+        val btnLogout = view.findViewById<Button>(R.id.btnLogout)
+
+        txtUsername.text = TokenManager.getUsername()
+        txtEmail.text = TokenManager.getEmail()
+
+        btnLogout.setOnClickListener {
+            popup.dismiss()
+            logout()
+        }
+
+        popup.elevation = 20f
+
+        // Allow closing by tapping outside
+        popup.isOutsideTouchable = true
+        popup.setBackgroundDrawable(android.graphics.drawable.ColorDrawable())
+
+        // Measure popup width
+        view.measure(
+            android.view.View.MeasureSpec.UNSPECIFIED,
+            android.view.View.MeasureSpec.UNSPECIFIED
+        )
+
+        val popupWidth = view.measuredWidth
+
+        // Align popup below the avatar, right edges aligned
+        popup.showAsDropDown(
+            imgProfile,
+            imgProfile.width - popupWidth,
+            8
+        )
+    }
+
+    private fun logout() {
+
+        val token = TokenManager.getToken()
+
+        if (token == null) {
+
+            TokenManager.clear()
+
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+
+            return
+        }
+
+        RetrofitClient.loginApi.logout("Bearer $token")
+            .enqueue(object : Callback<LogoutResponse> {
+
+                override fun onResponse(
+                    call: Call<LogoutResponse>,
+                    response: Response<LogoutResponse>
+                ) {
+
+                    TokenManager.clear()
+
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Logout successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    val intent = Intent(
+                        this@DashboardActivity,
+                        LoginActivity::class.java
+                    )
+
+                    intent.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or
+                                Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    startActivity(intent)
+                    finish()
+                }
+
+                override fun onFailure(
+                    call: Call<LogoutResponse>,
+                    t: Throwable
+                ) {
+
+                    Toast.makeText(
+                        this@DashboardActivity,
+                        "Unable to logout",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 }
