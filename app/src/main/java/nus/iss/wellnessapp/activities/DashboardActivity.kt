@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import nus.iss.wellnessapp.activities.LoginActivity
-import nus.iss.wellnessapp.storage.TokenManager
+
 import android.view.LayoutInflater
 import android.view.Gravity
 import android.widget.PopupWindow
