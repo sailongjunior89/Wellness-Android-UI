@@ -48,11 +48,6 @@ class EditActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
-    }
-
     private fun showLoading(isLoading: Boolean) {
         binding.loadingOverlay.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
@@ -199,7 +194,7 @@ class EditActivity : AppCompatActivity() {
             month,
             day
         )
-
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
         datePicker.show()
     }
 

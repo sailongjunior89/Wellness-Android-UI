@@ -10,7 +10,7 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:dividerHeight="1dp"/>
 
     <FrameLayout
@@ -18,7 +18,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_gravity="top|start"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="1dp"
         android:layout_marginTop="8dp"
         android:clickable="true"
         android:focusable="true"
