@@ -48,14 +48,7 @@ object RetrofitClient {
 
     /** Login/Logout/Register - Junior */
     val loginApi: LoginApiService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(LoginApiService::class.java)
-
-
-
+        retrofit.create(LoginApiService::class.java)
     }
 
     // ── Teammates: add your own ApiService files and register them here ──────

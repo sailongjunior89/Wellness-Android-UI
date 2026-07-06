@@ -228,58 +228,53 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun logout() {
 
-        val token = TokenManager.getToken()
+        lifecycleScope.launch {
 
-        if (token == null) {
+            try {
 
-            TokenManager.clear()
+                val token = "Bearer ${TokenManager.getToken()}"
 
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+                val response =
+                    RetrofitClient.loginApi.logout(token)
 
-            return
-        }
-
-        RetrofitClient.loginApi.logout("Bearer $token")
-            .enqueue(object : Callback<LogoutResponse> {
-
-                override fun onResponse(
-                    call: Call<LogoutResponse>,
-                    response: Response<LogoutResponse>
-                ) {
+                if (response.isSuccessful) {
 
                     TokenManager.clear()
 
                     Toast.makeText(
                         this@DashboardActivity,
-                        "Logout successfully",
+                        "Logout Successful",
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    val intent = Intent(
-                        this@DashboardActivity,
-                        LoginActivity::class.java
+                    startActivity(
+                        Intent(
+                            this@DashboardActivity,
+                            LoginActivity::class.java
+                        )
                     )
 
-                    intent.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                    startActivity(intent)
                     finish()
-                }
 
-                override fun onFailure(
-                    call: Call<LogoutResponse>,
-                    t: Throwable
-                ) {
+                } else {
 
                     Toast.makeText(
                         this@DashboardActivity,
-                        "Unable to logout",
-                        Toast.LENGTH_SHORT
+                        "Logout Failed",
+                        Toast.LENGTH_LONG
                     ).show()
+
                 }
-            })
+
+            } catch (e: Exception) {
+
+                Toast.makeText(
+                    this@DashboardActivity,
+                    e.localizedMessage,
+                    Toast.LENGTH_LONG
+                ).show()
+
+            }
+        }
     }
 }
