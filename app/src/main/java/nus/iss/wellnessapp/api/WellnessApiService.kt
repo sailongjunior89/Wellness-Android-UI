@@ -10,7 +10,7 @@ interface WellnessApiService {
     @GET("api/wellness/{userId}/history")
     fun getHistoryTrends(
         @Path("userId") userId: Int,
-        @Query("startDate") startDate: String, // Passes the dynamic calendar state to Spring Boot
-        @Query("timeframe") timeframe: String  // Maps to @RequestParam("timeframe")
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String
     ): Call<ChartDataResponse>
 }

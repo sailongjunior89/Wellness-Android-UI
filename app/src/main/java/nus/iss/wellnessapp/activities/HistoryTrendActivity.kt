@@ -16,6 +16,12 @@ import nus.iss.wellnessapp.R
 import java.text.SimpleDateFormat
 import java.util.*
 
+import android.content.Intent
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.view.MenuItem
+
+import nus.iss.wellnessapp.databinding.ActivityHistoryTrendBinding
+
 import nus.iss.wellnessapp.model.ChartDataResponse
 import nus.iss.wellnessapp.model.MetricEntry
 
@@ -59,15 +65,20 @@ class HistoryTrendActivity : AppCompatActivity() {
     private lateinit var tvWaterValue: TextView
     private lateinit var tvExerciseValue: TextView
 
+    private lateinit var binding: ActivityHistoryTrendBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history_trend)
+
+        binding = ActivityHistoryTrendBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initViews()
         adjustCalendarToPeriodStart()
         setupAllChartAppearances()
         setupClickListeners()
         updateDashboardView()
+        setupBottomNav()
     }
 
     private fun initViews() {
@@ -381,34 +392,40 @@ class HistoryTrendActivity : AppCompatActivity() {
 
         val apiService = retrofit.create(WellnessApiService::class.java)
 
+        // 1. Establish standard date formatters
         val requestDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dynamicStartDateString = requestDateFormat.format(currentPeriodStart.time)
+        val startString = requestDateFormat.format(currentPeriodStart.time)
 
-        // Convert active enum filter (DAY, WEEK, MONTH, THREE_MONTHS) to a clean string format
-        val timeframeString = currentFilter.name
+        // 2. Clone the start pointer to compute the exact ending boundary match
+        val endCalendar = (currentPeriodStart.clone() as Calendar)
+        when (currentFilter) {
+            Timeframe.DAY -> { /* End date is equal to start date */ }
+            Timeframe.WEEK -> endCalendar.add(Calendar.DATE, 6)
+            Timeframe.MONTH -> endCalendar.add(Calendar.DATE, currentPeriodStart.getActualMaximum(Calendar.DAY_OF_MONTH) - 1)
+            Timeframe.THREE_MONTHS -> {
+                endCalendar.add(Calendar.MONTH, 3)
+                endCalendar.add(Calendar.DATE, -1)
+            }
+        }
+        val endString = requestDateFormat.format(endCalendar.time)
 
-        val currentUserId = TokenManager.getUserId().toInt()
 
-        // Ensure the anonymous object block opens here with a curly brace '{'
-        apiService.getHistoryTrends(userId = currentUserId, startDate = dynamicStartDateString, timeframe = timeframeString)
+        // 3. Fire the request over the network using your updated two-parameter query configuration!
+        apiService.getHistoryTrends(userId = TokenManager.getUserId().toInt(), startDate = startString, endDate = endString)
             .enqueue(object : Callback<ChartDataResponse> {
-
                 override fun onResponse(call: Call<ChartDataResponse>, response: Response<ChartDataResponse>) {
                     if (response.isSuccessful && response.body() != null) {
                         val container = response.body()!!.chartData
                         val dataCount = calculateDataCountForCurrentFilter()
 
-                        // Process the raw backend array elements into sequential day slots
                         val stepsData = mapApiDataToTimeframeSlots(container.steps, dataCount)
                         val distanceData = mapApiDataToTimeframeSlots(container.distance, dataCount)
                         val sleepData = mapApiDataToTimeframeSlots(container.sleep, dataCount)
                         val waterData = mapApiDataToTimeframeSlots(container.water, dataCount)
                         val exerciseData = mapApiDataToTimeframeSlots(container.exercise, dataCount)
 
-                        // --- AGGREGATE SUMMARY FIGURES ---
                         updateSummaryMetrics(stepsData, distanceData, sleepData, waterData, exerciseData)
 
-                        // Clear out the warnings by passing those parsed data slots into the UI charts!
                         loadChartData(chartSteps, "#F05A28", stepsData, currentFilter)
                         loadChartData(chartDistance, "#1A73E8", distanceData, currentFilter)
                         loadChartData(chartSleep, "#9C27B0", sleepData, currentFilter)
@@ -420,7 +437,7 @@ class HistoryTrendActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<ChartDataResponse>, t: Throwable) {
                     t.printStackTrace()
                 }
-            }) // Closes the enqueue callback block cleanly
+            })
     }
 
     // Helper extraction function to isolate timeframe mathematical calculation
@@ -460,6 +477,26 @@ class HistoryTrendActivity : AppCompatActivity() {
 
         tvSleepValue.text = String.format(Locale.getDefault(), "%.1f", avgSleep) // e.g., 6.8
         tvWaterValue.text = String.format(Locale.getDefault(), "%.2f", avgWater) // e.g., 2.16
+    }
+
+    private fun setupBottomNav() {
+        // Highlight the History tab on this screen
+        binding.bottomNav.selectedItemId = R.id.nav_history
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_dashboard -> {
+                    startActivity(Intent(this, DashboardActivity::class.java))
+                    true
+                }
+                R.id.nav_history -> true
+                R.id.nav_chat -> {
+                    startActivity(Intent(this, ChatActivity::class.java))
+                    false
+                }
+                else -> false
+            }
+        }
     }
 
 }
