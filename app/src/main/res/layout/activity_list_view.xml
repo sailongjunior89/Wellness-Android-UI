@@ -10,8 +10,27 @@
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
         android:dividerHeight="1dp"/>
 
+    <FrameLayout
+        android:id="@+id/btnBack"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:elevation="20dp"
+        android:background="@android:color/transparent">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="start|center"
+            android:src="@drawable/ic_chevron_left"/>
+    </FrameLayout>
     <!-- Loading overlay -->
     <FrameLayout
         android:id="@+id/loadingOverlay"
