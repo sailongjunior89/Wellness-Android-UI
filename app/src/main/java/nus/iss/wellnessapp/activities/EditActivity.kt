@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.activities
-
+// author : Tan Pang Wee
 import android.os.Bundle
 import android.util.Log
 import android.view.View
