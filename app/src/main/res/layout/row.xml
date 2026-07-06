@@ -39,6 +39,7 @@
             android:id="@+id/tvDateRecord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text=""
             android:textSize="16sp"
             android:textColor="#666666"
             android:layout_marginTop="4dp" />
@@ -50,6 +51,8 @@
             android:text="Value"
             android:textSize="16sp"
             android:layout_marginTop="4dp" />
+
+
 
     </LinearLayout>
 
