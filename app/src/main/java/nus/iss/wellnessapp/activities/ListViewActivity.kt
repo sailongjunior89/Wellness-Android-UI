@@ -29,10 +29,11 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_list_view)
-        supportActionBar?.apply {
-            title = "Select for edit"
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
+
+        val buttonBack = findViewById<FrameLayout>(R.id.btnBack)
+        buttonBack.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
         }
 
         val listView = findViewById<ListView>(R.id.listView)
@@ -40,11 +41,6 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
         listView?.setOnItemClickListener(this)
 
         loadRecords()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
     }
 
     private fun showLoading(show: Boolean) {
