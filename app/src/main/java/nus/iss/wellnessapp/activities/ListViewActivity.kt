@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.activities
-
+// author : Tan Pang Wee
 import android.content.Intent
 import androidx.activity.enableEdgeToEdge
 import nus.iss.wellnessapp.R
