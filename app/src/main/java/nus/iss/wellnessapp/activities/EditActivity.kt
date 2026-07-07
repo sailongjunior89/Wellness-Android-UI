@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.activities
-
+// author : Tan Pang Wee
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -32,7 +32,7 @@ class EditActivity : AppCompatActivity() {
         getRecord(recordId)
 
         binding.btnBack.setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, ListViewActivity::class.java)
             startActivity(intent)
         }
 
@@ -194,7 +194,7 @@ class EditActivity : AppCompatActivity() {
             month,
             day
         )
-
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
         datePicker.show()
     }
 

@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.adapter
-
+// author : Tan Pang Wee
 import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
@@ -47,8 +47,23 @@ class CustomAdapter(private val context: Context,
         }
         textViewCategory.text =record.category.uppercase()
         // work around due to record date backend is a List
-        textViewRecordDate.text = "${record.recordDate[0]}-${record.recordDate[1]}-${record.recordDate[2]}"
+        var rawDate = "${record.recordDate[0]}-${record.recordDate[1]}-${record.recordDate[2]}"
+        textViewRecordDate.text = formatDate(rawDate)
         textViewValue.text = "${record.value} ${record.unit}"
         return _view
+    }
+
+    private fun formatDate(rawDate: String): String {
+
+        val formattedDate = rawDate
+            .split("-")
+            .let {
+                "%04d-%02d-%02d".format(
+                    it[0].toInt(),
+                    it[1].toInt(),
+                    it[2].toInt()
+                )
+            }
+        return formattedDate
     }
 }

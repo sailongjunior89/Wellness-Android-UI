@@ -19,9 +19,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("https://jitpack.io") // <-- Add it right here!
     }
 }
 
 rootProject.name = "WellnessApp"
 include(":app")
- 
+

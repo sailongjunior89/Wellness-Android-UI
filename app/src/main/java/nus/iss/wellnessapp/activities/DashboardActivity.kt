@@ -15,6 +15,7 @@ import android.widget.TextView
 import com.google.android.material.imageview.ShapeableImageView
 import nus.iss.wellnessapp.api.DashboardApiService
 import nus.iss.wellnessapp.model.DashboardResponse
+import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import nus.iss.wellnessapp.activities.LoginActivity
-import nus.iss.wellnessapp.storage.TokenManager
+
 import android.view.LayoutInflater
 import android.view.Gravity
 import android.widget.PopupWindow
@@ -79,7 +80,12 @@ class DashboardActivity : AppCompatActivity() {
 
         initViews()
         initRetrofit()
-        fetchDashboardData(userId = 1) // Fetching data for user ID 1 as seen in Postman
+
+        // Retrieve the active logged-in user's ID from TokenManager
+        val currentUserId = TokenManager.getUserId()
+
+        // Fetch dashboard statistics dynamically for the authenticated user
+        fetchDashboardData(userId = currentUserId.toInt())
 
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
@@ -222,58 +228,53 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun logout() {
 
-        val token = TokenManager.getToken()
+        lifecycleScope.launch {
 
-        if (token == null) {
+            try {
 
-            TokenManager.clear()
+                val token = "Bearer ${TokenManager.getToken()}"
 
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+                val response =
+                    RetrofitClient.loginApi.logout(token)
 
-            return
-        }
-
-        RetrofitClient.loginApi.logout("Bearer $token")
-            .enqueue(object : Callback<LogoutResponse> {
-
-                override fun onResponse(
-                    call: Call<LogoutResponse>,
-                    response: Response<LogoutResponse>
-                ) {
+                if (response.isSuccessful) {
 
                     TokenManager.clear()
 
                     Toast.makeText(
                         this@DashboardActivity,
-                        "Logout successfully",
+                        "Logout Successful",
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    val intent = Intent(
-                        this@DashboardActivity,
-                        LoginActivity::class.java
+                    startActivity(
+                        Intent(
+                            this@DashboardActivity,
+                            LoginActivity::class.java
+                        )
                     )
 
-                    intent.flags =
-                        Intent.FLAG_ACTIVITY_NEW_TASK or
-                                Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-                    startActivity(intent)
                     finish()
-                }
 
-                override fun onFailure(
-                    call: Call<LogoutResponse>,
-                    t: Throwable
-                ) {
+                } else {
 
                     Toast.makeText(
                         this@DashboardActivity,
-                        "Unable to logout",
-                        Toast.LENGTH_SHORT
+                        "Logout Failed",
+                        Toast.LENGTH_LONG
                     ).show()
+
                 }
-            })
+
+            } catch (e: Exception) {
+
+                Toast.makeText(
+                    this@DashboardActivity,
+                    e.localizedMessage,
+                    Toast.LENGTH_LONG
+                ).show()
+
+            }
+        }
     }
 }
