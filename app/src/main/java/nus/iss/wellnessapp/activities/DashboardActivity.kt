@@ -18,6 +18,7 @@ import nus.iss.wellnessapp.model.DashboardResponse
 import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -41,6 +42,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var txtUsername: TextView
     private lateinit var txtFullName: TextView
     private lateinit var txtMood: TextView
+    private lateinit var txtRecommendationTitle: TextView
     private lateinit var txtRecommendation: TextView
     private lateinit var txtSteps: TextView
     private lateinit var txtSleep: TextView
@@ -97,9 +99,11 @@ class DashboardActivity : AppCompatActivity() {
         //fetchDashboardData(userId = currentUserId.toInt())
         fetchDashboardData()
 
+        // Load AI recommendation separately (Htet Nandar)
+        loadRecommendation()
+
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
-
         imgProfile.setOnClickListener {
             showProfilePopup()
         }
@@ -110,6 +114,7 @@ class DashboardActivity : AppCompatActivity() {
         txtUsername = findViewById(R.id.txtUsername)
         txtFullName = findViewById(R.id.txtFullName)
         txtMood = findViewById(R.id.txtMood)
+        txtRecommendationTitle = findViewById(R.id.txtRecommendationTitle)
         txtRecommendation = findViewById(R.id.txtRecommendation)
         txtSteps = findViewById(R.id.txtSteps)
         txtSleep = findViewById(R.id.txtSleep)
@@ -169,15 +174,16 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         //fetchDashboardData(TokenManager.getUserId().toInt())
         fetchDashboardData()
+        loadRecommendation()
     }
     private fun bindDataToUI(data: DashboardResponse) {
         // Welcome Header info
         txtUsername.text = "❤\uFE0F Welcome ❤\uFE0F,  ${data.username}"
         txtFullName.text = data.fullName
         txtMood.text = "Current Mood: ${data.mood}"
-        txtRecommendation.text = data.latestRecommendation
 
         // Daily Stats Group
         txtSteps.text = String.format("\uD83C\uDFC3\u200D♂\uFE0F\u200D➡\uFE0F  %,.0f steps", data.steps)
@@ -190,6 +196,28 @@ class DashboardActivity : AppCompatActivity() {
         txtAvgSleep.text = "${data.avgSleepHours} hrs"
         txtAvgWater.text = String.format("%.1f L", data.avgWaterIntake ?: 0.0)
         txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
+    }
+
+    // ── AI Recommendation (Htet Nandar) ──────────────────────────────────────────
+    private fun loadRecommendation() {
+        txtRecommendationTitle.text = ""
+        txtRecommendation.text = "Loading your personalized wellness tip…"
+        lifecycleScope.launch {
+            try {
+                val rec = RetrofitClient.recommendationApi.getLatest()
+                txtRecommendationTitle.text = rec.title
+                txtRecommendation.text = rec.recommendation
+            } catch (e: HttpException) {
+                txtRecommendationTitle.text = ""
+                txtRecommendation.text = if (e.code() == 503)
+                    "AI service is starting up, please check back in a moment."
+                else
+                    "⚠️ Could not load recommendation (${e.code()})"
+            } catch (e: Exception) {
+                txtRecommendationTitle.text = ""
+                txtRecommendation.text = "⚠️ ${e.message}"
+            }
+        }
     }
 
     private fun setupBottomNav() { // Ntet
@@ -232,12 +260,29 @@ class DashboardActivity : AppCompatActivity() {
 
         val txtUsername = view.findViewById<TextView>(R.id.txtPopupUsername)
         val txtEmail = view.findViewById<TextView>(R.id.txtPopupEmail)
+
+        val btnUpdateProfile = view.findViewById<Button>(R.id.btnUpdateProfile)
         val btnLogout = view.findViewById<Button>(R.id.btnLogout)
 
         txtUsername.text = TokenManager.getUsername()
         txtEmail.text = TokenManager.getEmail()
 
+        btnUpdateProfile.setOnClickListener {
+
+            popup.dismiss()
+
+            val intent = Intent(
+                this@DashboardActivity,
+                RegisterStep2Activity::class.java
+            )
+
+            intent.putExtra("MODE", "UPDATE")
+
+            startActivity(intent)
+        }
+
         btnLogout.setOnClickListener {
+
             popup.dismiss()
             logout()
         }
@@ -264,6 +309,7 @@ class DashboardActivity : AppCompatActivity() {
         )
     }
 
+    //logout : Junior
     private fun logout() {
 
         lifecycleScope.launch {
