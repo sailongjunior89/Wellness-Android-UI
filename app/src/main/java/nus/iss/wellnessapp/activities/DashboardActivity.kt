@@ -99,7 +99,6 @@ class DashboardActivity : AppCompatActivity() {
 
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
-
         imgProfile.setOnClickListener {
             showProfilePopup()
         }
@@ -221,12 +220,29 @@ class DashboardActivity : AppCompatActivity() {
 
         val txtUsername = view.findViewById<TextView>(R.id.txtPopupUsername)
         val txtEmail = view.findViewById<TextView>(R.id.txtPopupEmail)
+
+        val btnUpdateProfile = view.findViewById<Button>(R.id.btnUpdateProfile)
         val btnLogout = view.findViewById<Button>(R.id.btnLogout)
 
         txtUsername.text = TokenManager.getUsername()
         txtEmail.text = TokenManager.getEmail()
 
+        btnUpdateProfile.setOnClickListener {
+
+            popup.dismiss()
+
+            val intent = Intent(
+                this@DashboardActivity,
+                RegisterStep2Activity::class.java
+            )
+
+            intent.putExtra("MODE", "UPDATE")
+
+            startActivity(intent)
+        }
+
         btnLogout.setOnClickListener {
+
             popup.dismiss()
             logout()
         }
@@ -253,6 +269,7 @@ class DashboardActivity : AppCompatActivity() {
         )
     }
 
+    //logout : Junior
     private fun logout() {
 
         lifecycleScope.launch {
