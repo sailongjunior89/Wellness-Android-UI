@@ -1,5 +1,6 @@
 package nus.iss.wellnessapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,7 @@ import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.databinding.ActivityChatBinding
 import nus.iss.wellnessapp.model.ChatRequest
 import nus.iss.wellnessapp.model.UiChatMessage
+import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.HttpException
 
 // Author : Htet Nandar
@@ -182,6 +184,7 @@ class ChatActivity : AppCompatActivity() {
                 scrollToBottom()
                 setInputEnabled(true)
             } catch (e: Exception) {
+                if (handleIfUnauthorized(e)) return@launch
                 Log.e("ChatActivity", "loadMessages: ${e.message}")
                 Toast.makeText(this@ChatActivity, "Failed to load messages", Toast.LENGTH_SHORT).show()
                 setInputEnabled(true)
@@ -246,6 +249,7 @@ class ChatActivity : AppCompatActivity() {
                 chatAdapter.addMessage(UiChatMessage(content = response.reply, isUser = false))
                 scrollToBottom()
             } catch (e: Exception) {
+                if (handleIfUnauthorized(e)) return@launch
                 val userMsg = friendlyError(e)
                 chatAdapter.addMessage(UiChatMessage(content = userMsg, isUser = false))
                 scrollToBottom()
@@ -271,10 +275,29 @@ class ChatActivity : AppCompatActivity() {
         binding.btnSend.isEnabled   = enabled
     }
 
+    /** Clears the stored token and sends the user back to login with an expiry message. */
+    private fun redirectToLogin() {
+        TokenManager.clearToken()
+        val intent = Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("SESSION_EXPIRED", true)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    /** Returns true (and redirects) if the exception is a 401. */
+    private fun handleIfUnauthorized(e: Exception): Boolean {
+        if (e is HttpException && e.code() == 401) {
+            redirectToLogin()
+            return true
+        }
+        return false
+    }
+
     private fun friendlyError(e: Exception): String = when (e) {
         is HttpException -> when (e.code()) {
             in 500..599 -> "⚠️ The wellness AI service is currently unavailable. Please try again later."
-            401 -> "Your session has expired. Please log in again."
             403 -> "You don't have permission to perform this action."
             else -> "Something went wrong. Please try again."
         }
