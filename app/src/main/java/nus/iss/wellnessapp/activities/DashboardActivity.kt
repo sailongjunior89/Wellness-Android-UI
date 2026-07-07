@@ -38,6 +38,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var txtUsername: TextView
     private lateinit var txtFullName: TextView
     private lateinit var txtMood: TextView
+    private lateinit var txtRecommendationTitle: TextView
     private lateinit var txtRecommendation: TextView
     private lateinit var txtSteps: TextView
     private lateinit var txtSleep: TextView
@@ -87,6 +88,9 @@ class DashboardActivity : AppCompatActivity() {
         // Fetch dashboard statistics dynamically for the authenticated user
         fetchDashboardData(userId = currentUserId.toInt())
 
+        // Load AI recommendation separately (Htet Nandar)
+        loadRecommendation()
+
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
 
@@ -99,6 +103,7 @@ class DashboardActivity : AppCompatActivity() {
         txtUsername = findViewById(R.id.txtUsername)
         txtFullName = findViewById(R.id.txtFullName)
         txtMood = findViewById(R.id.txtMood)
+        txtRecommendationTitle = findViewById(R.id.txtRecommendationTitle)
         txtRecommendation = findViewById(R.id.txtRecommendation)
         txtSteps = findViewById(R.id.txtSteps)
         txtSleep = findViewById(R.id.txtSleep)
@@ -111,12 +116,7 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun initRetrofit() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        apiService = retrofit.create(DashboardApiService::class.java)
+        apiService = RetrofitClient.dashboardApi
     }
 
     private fun fetchDashboardData(userId: Int) {
@@ -145,7 +145,6 @@ class DashboardActivity : AppCompatActivity() {
         txtUsername.text = "❤\uFE0F Welcome ❤\uFE0F,  ${data.username}"
         txtFullName.text = data.fullName
         txtMood.text = "Current Mood: ${data.mood}"
-        txtRecommendation.text = data.latestRecommendation
 
         // Daily Stats Group
         txtSteps.text = String.format("\uD83C\uDFC3\u200D♂\uFE0F\u200D➡\uFE0F  %,.0f steps", data.steps)
@@ -158,6 +157,22 @@ class DashboardActivity : AppCompatActivity() {
         txtAvgSleep.text = "${data.avgSleepHours} hrs"
         txtAvgWater.text = String.format("%.1f L", data.avgWaterIntake ?: 0.0)
         txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
+    }
+
+    // ── AI Recommendation (Htet Nandar) ──────────────────────────────────────────
+    private fun loadRecommendation() {
+        txtRecommendationTitle.text = ""
+        txtRecommendation.text = "Loading your personalized wellness tip…"
+        lifecycleScope.launch {
+            try {
+                val rec = RetrofitClient.recommendationApi.getLatest()
+                txtRecommendationTitle.text = rec.title
+                txtRecommendation.text = rec.recommendation
+            } catch (e: Exception) {
+                txtRecommendationTitle.text = ""
+                txtRecommendation.text = "⚠️ ${e.message}"
+            }
+        }
     }
 
     private fun setupBottomNav() { // Ntet

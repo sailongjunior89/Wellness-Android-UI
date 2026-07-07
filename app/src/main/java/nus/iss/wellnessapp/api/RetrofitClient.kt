@@ -31,7 +31,7 @@ object RetrofitClient {
             .build()
     }
 
-    /** Chat sessions and messages — Grace */
+    /** Chat sessions and messages — Htet Nandar */
     val chatApi: ChatApiService by lazy {
         retrofit.create(ChatApiService::class.java)
     }
@@ -49,6 +49,11 @@ object RetrofitClient {
     /** Login/Logout/Register - Junior */
     val loginApi: LoginApiService by lazy {
         retrofit.create(LoginApiService::class.java)
+    }
+
+    /** AI Recommendations — Htet Nandar */
+    val recommendationApi: RecommendationApiService by lazy {
+        retrofit.create(RecommendationApiService::class.java)
     }
 
     // ── Teammates: add your own ApiService files and register them here ──────
