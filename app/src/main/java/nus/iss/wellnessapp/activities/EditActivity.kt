@@ -46,6 +46,7 @@ class EditActivity : AppCompatActivity() {
             val position = intent.getIntExtra("position", -1)
             updateRecord()
         }
+
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -102,7 +103,7 @@ class EditActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("API", e.message ?: "")
             } finally {
-                delay(500)
+                delay(600)
                 showLoading(false)
             }
         }
@@ -147,6 +148,9 @@ class EditActivity : AppCompatActivity() {
                         "Record updated successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    delay(600)
+                    val intent = Intent(this@EditActivity, ListViewActivity::class.java)
+                    startActivity(intent)
 
                 } else {
                     Toast.makeText(
