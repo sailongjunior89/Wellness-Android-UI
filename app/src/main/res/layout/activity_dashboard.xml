@@ -416,12 +416,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="＋ Add Record" />
-            <Button
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdateRecord"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Update Record" />
+                android:text="Manage Records"
+                app:icon="@drawable/ic_assignment"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"/>
         </LinearLayout>
     </ScrollView>
 

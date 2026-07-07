@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.activities
-
+// author : Tan Pang Wee
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -28,19 +28,13 @@ class EditActivity : AppCompatActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.apply {
-            title = "Edit record"
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-        }
-
         val recordId = intent.getLongExtra("recordId", -1L)
         getRecord(recordId)
 
-//        binding.btnBack.setOnClickListener {
-//            val intent = Intent(this, DashboardActivity::class.java)
-//            startActivity(intent)
-//        }
+        binding.btnBack.setOnClickListener {
+            val intent = Intent(this, ListViewActivity::class.java)
+            startActivity(intent)
+        }
 
         binding.etRecordDate.setOnClickListener {
             showDatePicker()
@@ -52,11 +46,7 @@ class EditActivity : AppCompatActivity() {
             val position = intent.getIntExtra("position", -1)
             updateRecord()
         }
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        finish()
-        return true
     }
 
     private fun showLoading(isLoading: Boolean) {
@@ -113,7 +103,7 @@ class EditActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("API", e.message ?: "")
             } finally {
-                delay(500)
+                delay(600)
                 showLoading(false)
             }
         }
@@ -158,6 +148,9 @@ class EditActivity : AppCompatActivity() {
                         "Record updated successfully",
                         Toast.LENGTH_SHORT
                     ).show()
+                    delay(600)
+                    val intent = Intent(this@EditActivity, ListViewActivity::class.java)
+                    startActivity(intent)
 
                 } else {
                     Toast.makeText(
@@ -205,7 +198,7 @@ class EditActivity : AppCompatActivity() {
             month,
             day
         )
-
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
         datePicker.show()
     }
 

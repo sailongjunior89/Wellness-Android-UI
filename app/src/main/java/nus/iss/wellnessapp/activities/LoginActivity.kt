@@ -37,6 +37,11 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
+        // Show toast if redirected due to session/token expiry
+        if (intent.getBooleanExtra("SESSION_EXPIRED", false)) {
+            Toast.makeText(this, "Session expired. Please log in again.", Toast.LENGTH_LONG).show()
+        }
+
         etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
         btnLogin = findViewById(R.id.btnLogin)

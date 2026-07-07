@@ -1,5 +1,7 @@
 package nus.iss.wellnessapp.activities
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -98,11 +100,35 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(
                         this@RegisterActivity,
                         "Registration Successful",
-                        Toast.LENGTH_LONG
+                        Toast.LENGTH_SHORT
                     ).show()
 
-                    finish()
+                    AlertDialog.Builder(this@RegisterActivity)
+                        .setTitle("Create Profile")
+                        .setMessage("Do you want to create your profile?")
+                        .setCancelable(false)
 
+                        .setPositiveButton("Yes") { _, _ ->
+
+                            val intent = Intent(
+                                this@RegisterActivity,
+                                RegisterStep2Activity::class.java
+                            )
+
+                            intent.putExtra("username", username)
+                            intent.putExtra("email", email)
+                            intent.putExtra("password", password)
+
+                            startActivity(intent)
+                            finish()
+                        }
+
+                        .setNegativeButton("No") { _, _ ->
+
+                            finish()
+                        }
+
+                        .show()
                 } else {
 
                     val errorMessage = response.errorBody()?.string()
