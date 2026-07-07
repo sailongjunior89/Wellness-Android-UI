@@ -1,5 +1,6 @@
 package nus.iss.wellnessapp.model
 
+// Cecil
 data class ChartDataResponse(val chartData: MetricsContainer)
 data class MetricsContainer(
     val steps: List<MetricEntry>?,

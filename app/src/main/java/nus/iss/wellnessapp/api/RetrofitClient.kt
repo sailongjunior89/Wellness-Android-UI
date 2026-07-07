@@ -41,6 +41,11 @@ object RetrofitClient {
         retrofit.create(DashboardApiService::class.java)
     }
 
+    /** History & Trends — Cecil */
+    val wellnessApi: WellnessApiService by lazy {
+        retrofit.create(WellnessApiService::class.java)
+    }
+
     /** Wellness records — Si Hua */
     val recordApi: RecordApiService by lazy {
         retrofit.create(RecordApiService::class.java)

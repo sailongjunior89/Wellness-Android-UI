@@ -19,6 +19,7 @@ import java.util.*
 import android.content.Intent
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.view.MenuItem
+import nus.iss.wellnessapp.api.RetrofitClient
 
 import nus.iss.wellnessapp.databinding.ActivityHistoryTrendBinding
 
@@ -36,7 +37,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 
 
+// Cecil
 class HistoryTrendActivity : AppCompatActivity() {
+
+    private lateinit var apiService: WellnessApiService
 
     private enum class Timeframe { DAY, WEEK, MONTH, THREE_MONTHS }
     private var currentFilter = Timeframe.WEEK // Default matching reference
@@ -72,6 +76,9 @@ class HistoryTrendActivity : AppCompatActivity() {
 
         binding = ActivityHistoryTrendBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Initialize API service with JWT handling built-in!
+        apiService = RetrofitClient.wellnessApi
 
         initViews()
         adjustCalendarToPeriodStart()
@@ -385,12 +392,12 @@ class HistoryTrendActivity : AppCompatActivity() {
     } */
 
     private fun fetchHistoricalDataFromServer() {
-        val retrofit = Retrofit.Builder()
+        /*val retrofit = Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val apiService = retrofit.create(WellnessApiService::class.java)
+        val apiService = retrofit.create(WellnessApiService::class.java) */
 
         // 1. Establish standard date formatters
         val requestDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -411,7 +418,8 @@ class HistoryTrendActivity : AppCompatActivity() {
 
 
         // 3. Fire the request over the network using your updated two-parameter query configuration!
-        apiService.getHistoryTrends(userId = TokenManager.getUserId().toInt(), startDate = startString, endDate = endString)
+        //apiService.getHistoryTrends(userId = TokenManager.getUserId().toInt(), startDate = startString, endDate = endString)
+        apiService.getHistoryTrends(startDate = startString, endDate = endString)
             .enqueue(object : Callback<ChartDataResponse> {
                 override fun onResponse(call: Call<ChartDataResponse>, response: Response<ChartDataResponse>) {
                     if (response.isSuccessful && response.body() != null) {

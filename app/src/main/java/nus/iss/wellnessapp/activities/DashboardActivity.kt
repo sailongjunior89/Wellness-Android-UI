@@ -28,12 +28,15 @@ import nus.iss.wellnessapp.activities.LoginActivity
 import android.view.LayoutInflater
 import android.view.Gravity
 import android.widget.PopupWindow
+import nus.iss.wellnessapp.api.AuthInterceptor
 import nus.iss.wellnessapp.model.LogoutResponse
+import okhttp3.OkHttpClient
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var apiService: DashboardApiService
 
+    // Cecil
     // UI Elements
     private lateinit var txtUsername: TextView
     private lateinit var txtFullName: TextView
@@ -88,10 +91,11 @@ class DashboardActivity : AppCompatActivity() {
         initRetrofit()
 
         // Retrieve the active logged-in user's ID from TokenManager
-        val currentUserId = TokenManager.getUserId()
+        //val currentUserId = TokenManager.getUserId()
 
         // Fetch dashboard statistics dynamically for the authenticated user
-        fetchDashboardData(userId = currentUserId.toInt())
+        //fetchDashboardData(userId = currentUserId.toInt())
+        fetchDashboardData()
 
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
@@ -101,6 +105,7 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    // Cecil
     private fun initViews() {
         txtUsername = findViewById(R.id.txtUsername)
         txtFullName = findViewById(R.id.txtFullName)
@@ -116,21 +121,40 @@ class DashboardActivity : AppCompatActivity() {
         txtAvgExercise = findViewById(R.id.txtAvgExercise)
     }
 
-    private fun initRetrofit() {
+    private fun initRetrofit() { /*
         val retrofit = Retrofit.Builder()
             .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        apiService = retrofit.create(DashboardApiService::class.java)
+        apiService = retrofit.create(DashboardApiService::class.java) */
+
+        // Create the OkHttpClient and add your JWT interceptor
+        /*
+        val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(this))
+            .build()
+
+        // Attach the client to your Retrofit Builder
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
+            .client(okHttpClient) // <-- CRITICAL: This injects the JWT token!
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        apiService = retrofit.create(DashboardApiService::class.java) */
+        apiService = RetrofitClient.dashboardApi
+
     }
 
-    private fun fetchDashboardData(userId: Int) {
-        apiService.getDashboardData(userId).enqueue(object : Callback<DashboardResponse> {
+    // Cecil
+    //private fun fetchDashboardData(userId: Int) {
+    private fun fetchDashboardData() {
+        apiService.getDashboardData().enqueue(object : Callback<DashboardResponse> {
             override fun onResponse(call: Call<DashboardResponse>, response: Response<DashboardResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     val data = response.body()!!
-                    bindDataToUI(data)
+                    bindDataToUI(data) // Updating API return data into dashboard.
                 } else {
                     Toast.makeText(this@DashboardActivity, "Failed to parse data", Toast.LENGTH_SHORT).show()
                 }
@@ -140,11 +164,13 @@ class DashboardActivity : AppCompatActivity() {
                 Toast.makeText(this@DashboardActivity, "Network Error: ${t.message}", Toast.LENGTH_LONG).show()
             }
         })
+
     }
 
     override fun onResume() {
         super.onResume()
-        fetchDashboardData(userId = 1)
+        //fetchDashboardData(TokenManager.getUserId().toInt())
+        fetchDashboardData()
     }
     private fun bindDataToUI(data: DashboardResponse) {
         // Welcome Header info

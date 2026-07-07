@@ -2,6 +2,7 @@ package nus.iss.wellnessapp.model
 
 import com.google.gson.annotations.SerializedName
 
+// Cecil
 data class DashboardResponse(
 
     @SerializedName("username") val username: String,
