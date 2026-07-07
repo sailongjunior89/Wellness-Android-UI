@@ -105,14 +105,23 @@
                         android:textSize="13sp"
                         android:textStyle="bold" />
                     <TextView
+                        android:id="@+id/txtRecommendationTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text=""
+                        android:textColor="#1A1A1A"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                    <TextView
                         android:id="@+id/txtRecommendation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="AI is coming... analyzing your metrics to generate personalized daily advice."
+                        android:text="Loading your personalized wellness tip…"
                         android:textColor="#374151"
-                        android:textSize="16sp"
-                        android:lineSpacingMultiplier="1.1" />
+                        android:textSize="14sp"
+                        android:lineSpacingMultiplier="1.3" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
