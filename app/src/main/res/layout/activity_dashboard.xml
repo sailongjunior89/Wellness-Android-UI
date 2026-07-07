@@ -6,6 +6,7 @@
     android:background="#F7F9FC"
     android:orientation="vertical">
 
+    <!-- android:background="#F7F9FC"  android:background="@drawable/app_background"  -->
     <!-- Main Content Scrollable Area -->
     <ScrollView
         android:layout_width="match_parent"

@@ -7,8 +7,14 @@
         android:title="Dashboard" />
 
     <item
+        android:id="@+id/nav_history"
+        android:icon="@drawable/history_trend_icon"
+        android:title="History Trend" />
+
+    <item
         android:id="@+id/nav_chat"
         android:icon="@drawable/ic_nav_chat"
         android:title="Chatbot" />
+
 
 </menu>

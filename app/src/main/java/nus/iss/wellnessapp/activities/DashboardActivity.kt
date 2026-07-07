@@ -79,6 +79,12 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, ListViewActivity::class.java))
         }
 
+        // Cecil
+        //findViewById<TextView>(R.id.txtHistoricalTrendsHeader).setOnClickListener {
+        //    val intent = Intent(this, HistoryTrendActivity::class.java)
+        //    startActivity(intent)
+        //}
+
         initViews()
         initRetrofit()
 
@@ -185,6 +191,12 @@ class DashboardActivity : AppCompatActivity() {
                     startActivity(Intent(this, DashboardActivity::class.java))// for dashboard
                     true
                 }*/
+
+                R.id.nav_history -> {
+                    startActivity(Intent(this, HistoryTrendActivity::class.java))
+                    true
+                }
+
                 R.id.nav_chat -> {
                     startActivity(Intent(this, ChatActivity::class.java))
                     false  // don't highlight
