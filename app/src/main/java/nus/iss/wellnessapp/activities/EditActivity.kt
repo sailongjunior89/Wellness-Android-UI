@@ -20,6 +20,7 @@ import nus.iss.wellnessapp.databinding.ActivityEditBinding
 
 class EditActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditBinding
+    private var recordId: Long = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class EditActivity : AppCompatActivity() {
         binding = ActivityEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val recordId = intent.getLongExtra("recordId", -1L)
+        recordId = intent.getLongExtra("recordId", -1L)
         getRecord(recordId)
 
         binding.btnBack.setOnClickListener {
@@ -45,6 +46,12 @@ class EditActivity : AppCompatActivity() {
         binding.btnUpdateRecord.setOnClickListener {
             val position = intent.getIntExtra("position", -1)
             updateRecord()
+        }
+
+        binding.btnDeleteRecord.setOnClickListener {
+            val intent = Intent(this, DeleteActivity::class.java)
+            intent.putExtra("recordId", recordId)
+            startActivity(intent)
         }
 
     }

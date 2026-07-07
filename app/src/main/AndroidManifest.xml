@@ -35,6 +35,8 @@
         
         <activity android:name=".activities.EditActivity" />
 
+        <activity android:name=".activities.DeleteActivity" />
+
         <activity android:name=".activities.DashboardActivity"
             android:exported="true"/>
 
