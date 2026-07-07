@@ -29,6 +29,8 @@ import nus.iss.wellnessapp.model.UserProfileRequest
 import nus.iss.wellnessapp.storage.TokenManager
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -45,6 +47,8 @@ class RegisterStep2Activity : AppCompatActivity() {
     //==========================================
     // UI Controls
     //==========================================
+    private lateinit var etUsername: TextInputEditText
+    private lateinit var etEmail: TextInputEditText
 
     private lateinit var etFirstName: TextInputEditText
     private lateinit var etLastName: TextInputEditText
@@ -61,6 +65,8 @@ class RegisterStep2Activity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
 
     private val calendar = Calendar.getInstance()
+
+    private var isUpdateMode = false
 
     //==========================================
     // onCreate
@@ -82,9 +88,14 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         password = intent.getStringExtra("password") ?: ""
 
+        isUpdateMode = intent.getStringExtra("MODE") == "UPDATE"
+
         //------------------------------------------
         // Controls
         //------------------------------------------
+
+        etUsername = findViewById(R.id.etUsername)
+        etEmail = findViewById(R.id.etEmail)
 
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
@@ -110,20 +121,34 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         setupDatePicker()
 
+        if (isUpdateMode) {
+
+            btnRegister.text = "UPDATE"
+
+            loadProfile()
+
+        }
+
         //------------------------------------------
         // Register Button
         //------------------------------------------
 
         btnRegister.setOnClickListener {
 
-            if (validateInput()) {
+            if (!validateInput()) {
+                return@setOnClickListener
+            }
+
+            if (isUpdateMode) {
+
+                updateProfile()
+
+            } else {
 
                 loginAfterRegister()
 
             }
-
         }
-
     }
 
     //====================================================
@@ -232,6 +257,16 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         }
 
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val dob = LocalDate.parse(etDob.text.toString().trim(), formatter)
+
+        if (dob.isAfter(LocalDate.now())) {
+
+            etDob.error = "Date of birth cannot be in the future"
+            etDob.requestFocus()
+            return false
+        }
+
         if (etAddress.text.toString().trim().isEmpty()) {
 
             etAddress.error = "Address is required"
@@ -242,7 +277,7 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         val height = etHeight.text.toString().toDoubleOrNull()
 
-        if (height == null || height <= 0) {
+        if (height == null || height <= 0 || height >=272) {
 
             etHeight.error = "Invalid height"
             etHeight.requestFocus()
@@ -252,7 +287,7 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         val weight = etWeight.text.toString().toDoubleOrNull()
 
-        if (weight == null || weight <= 0) {
+        if (weight == null || weight <= 0 || weight >=650) {
 
             etWeight.error = "Invalid weight"
             etWeight.requestFocus()
@@ -406,7 +441,10 @@ class RegisterStep2Activity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@RegisterStep2Activity,
-                        "Profile created successfully",
+                        if (isUpdateMode)
+                            "Profile updated successfully"
+                        else
+                            "Profile created successfully",
                         Toast.LENGTH_SHORT
                     ).show()
 
@@ -460,4 +498,64 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
+    private fun loadProfile() {
+
+        lifecycleScope.launch {
+
+            showLoading(true)
+
+            try {
+
+                val response =
+                    RetrofitClient.loginApi.getProfile()
+
+                showLoading(false)
+
+                if (response.isSuccessful) {
+
+                    val profile = response.body() ?: return@launch
+
+                    etUsername.setText(profile.username)
+                    etEmail.setText(TokenManager.getEmail())
+
+                    etFirstName.setText(profile.firstName)
+                    etLastName.setText(profile.lastName)
+                    etDob.setText(profile.dateOfBirth)
+                    etAddress.setText(profile.address)
+                    etHeight.setText(profile.heightCm.toString())
+                    etWeight.setText(profile.weightKg.toString())
+
+                    spGender.setSelection(
+                        Gender.values().indexOf(profile.gender)
+                    )
+
+                    spFitnessGoal.setSelection(
+                        FitnessGoal.values().indexOf(profile.fitnessGoal)
+                    )
+
+                } else {
+
+                    Toast.makeText(
+                        this@RegisterStep2Activity,
+                        "Unable to load profile",
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                }
+
+            } catch (e: Exception) {
+
+                showLoading(false)
+
+                Toast.makeText(
+                    this@RegisterStep2Activity,
+                    e.localizedMessage ?: "Network Error",
+                    Toast.LENGTH_LONG
+                ).show()
+
+            }
+
+        }
+
+    }
 }

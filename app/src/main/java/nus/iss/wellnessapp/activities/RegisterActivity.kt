@@ -13,6 +13,8 @@ import kotlinx.coroutines.launch
 import nus.iss.wellnessapp.R
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.RegisterRequest
+import com.google.gson.Gson
+import nus.iss.wellnessapp.model.ErrorResponse
 
 //author: Junior
 class RegisterActivity : AppCompatActivity() {
@@ -91,7 +93,8 @@ class RegisterActivity : AppCompatActivity() {
                     RegisterRequest(
                         username = username,
                         email = email,
-                        password = password
+                        password = password,
+                        confirmPassword = confirmPassword
                     )
                 )
 
@@ -107,7 +110,6 @@ class RegisterActivity : AppCompatActivity() {
                         .setTitle("Create Profile")
                         .setMessage("Do you want to create your profile?")
                         .setCancelable(false)
-
                         .setPositiveButton("Yes") { _, _ ->
 
                             val intent = Intent(
@@ -122,22 +124,26 @@ class RegisterActivity : AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         }
-
                         .setNegativeButton("No") { _, _ ->
-
                             finish()
                         }
-
                         .show()
+
                 } else {
 
-                    val errorMessage = response.errorBody()?.string()
+                    val errorBody = response.errorBody()?.charStream()
 
-                    Toast.makeText(
-                        this@RegisterActivity,
-                        errorMessage ?: "Registration Failed",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    val errorResponse = try {
+                        Gson().fromJson(errorBody, ErrorResponse::class.java)
+                    } catch (e: Exception) {
+                        null
+                    }
+
+                    AlertDialog.Builder(this@RegisterActivity)
+                        .setTitle("Registration Failed")
+                        .setMessage(errorResponse?.message ?: "Registration failed.")
+                        .setPositiveButton("OK", null)
+                        .show()
                 }
 
             } catch (e: Exception) {
