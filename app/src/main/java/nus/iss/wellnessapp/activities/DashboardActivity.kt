@@ -18,6 +18,7 @@ import nus.iss.wellnessapp.model.DashboardResponse
 import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -143,7 +144,9 @@ class DashboardActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        fetchDashboardData(userId = 1)
+        val currentUserId = TokenManager.getUserId()
+        fetchDashboardData(userId = currentUserId.toInt())
+        loadRecommendation()
     }
     private fun bindDataToUI(data: DashboardResponse) {
         // Welcome Header info
@@ -173,6 +176,12 @@ class DashboardActivity : AppCompatActivity() {
                 val rec = RetrofitClient.recommendationApi.getLatest()
                 txtRecommendationTitle.text = rec.title
                 txtRecommendation.text = rec.recommendation
+            } catch (e: HttpException) {
+                txtRecommendationTitle.text = ""
+                txtRecommendation.text = if (e.code() == 503)
+                    "AI service is starting up, please check back in a moment."
+                else
+                    "⚠️ Could not load recommendation (${e.code()})"
             } catch (e: Exception) {
                 txtRecommendationTitle.text = ""
                 txtRecommendation.text = "⚠️ ${e.message}"
