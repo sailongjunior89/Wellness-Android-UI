@@ -22,43 +22,65 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add Today's Record"
+            android:text="Add Record"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etSteps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Steps"
-            android:inputType="number" />
+            android:inputType="number"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etSleep"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Sleep (hours)"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etWater"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Water (liters)"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etExercise"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Exercise (minutes)"
-            android:inputType="number" />
+            android:inputType="number"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/etCalories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Calories burned (kcal)"
+            android:inputType="numberDecimal"
+            android:minHeight="48dp" />
 
         <EditText
             android:id="@+id/etMood"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Mood (e.g. Good)" />
+            android:hint="Mood (e.g. Good)"
+            android:minHeight="48dp" />
+
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Record date"
+            android:focusable="false"
+            android:minHeight="48dp" />
 
         <Button
             android:id="@+id/btnSave"

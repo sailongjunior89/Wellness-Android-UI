@@ -25,6 +25,28 @@ class AddRecordActivity : AppCompatActivity() {
         val etWater = findViewById<EditText>(R.id.etWater)
         val etExercise = findViewById<EditText>(R.id.etExercise)
         val etMood = findViewById<EditText>(R.id.etMood)
+        val etDate = findViewById<EditText>(R.id.etDate)
+        val etCalories = findViewById<EditText>(R.id.etCalories)
+
+// selectedDate holds the chosen date; starts as today
+        var selectedDate = java.time.LocalDate.now()
+        etDate.setText(selectedDate.toString())
+
+        etDate.setOnClickListener {
+            // DatePickerDialog is Android's built-in calendar popup.
+            // Note: the dialog counts months from 0 (January = 0),
+            // while LocalDate counts from 1 — hence the +1 and -1 below.
+            android.app.DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    selectedDate = java.time.LocalDate.of(year, month + 1, dayOfMonth)
+                    etDate.setText(selectedDate.toString())
+                },
+                selectedDate.year,
+                selectedDate.monthValue - 1,
+                selectedDate.dayOfMonth
+            ).show()
+        }
 
         findViewById<Button>(R.id.btnBack).setOnClickListener {
             Toast.makeText(this, "back tapped", Toast.LENGTH_SHORT).show()
@@ -38,6 +60,8 @@ class AddRecordActivity : AppCompatActivity() {
             val water = etWater.text.toString().toDoubleOrNull()
             val exercise = etExercise.text.toString().toIntOrNull()
             val mood = etMood.text.toString().trim()
+            // toDoubleOrNull returns null for empty or invalid input instead of crashing
+            val calories = etCalories.text.toString().toDoubleOrNull()
 
             if (steps == null || sleep == null || water == null ||
                 exercise == null || mood.isEmpty()
@@ -52,7 +76,7 @@ class AddRecordActivity : AppCompatActivity() {
             // 4. Async call — enqueue runs off the main thread; Android forbids
             //    network calls on the UI thread
             val userId = TokenManager.getUserId()
-            val today = java.time.LocalDate.now().toString()
+            val today = selectedDate.toString()
 
             android.util.Log.d("AddRecord", "userId = $userId")
 
@@ -61,7 +85,7 @@ class AddRecordActivity : AppCompatActivity() {
                 WellnessRecordRequest(userId, "sleep", sleep, unit = "hours", recordDate = today),
                 WellnessRecordRequest(userId, "water", water, unit = "liters", recordDate = today),
                 WellnessRecordRequest(userId, "exercise", exercise.toDouble(), unit = "minutes",
-                    durationMinutes = exercise, recordDate = today, notes = mood)
+                    caloriesBurned = calories, durationMinutes = exercise, recordDate = today, notes = mood)
             )
 
             var completed = 0

@@ -184,7 +184,8 @@ class DashboardActivity : AppCompatActivity() {
 
         // Historical Trends Group
         txtAvgSteps.text = String.format("%,.0f steps", data.avgSteps)
-        txtAvgSleep.text = "${data.avgSleepHours} hrs"
+        //txtAvgSleep.text = "${data.avgSleepHours} hrs"
+        txtAvgSleep.text = String.format("%.1f hrs", data.avgSleepHours ?: 0.0)
         txtAvgWater.text = String.format("%.1f L", data.avgWaterIntake ?: 0.0)
         txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
     }

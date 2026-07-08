@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import nus.iss.wellnessapp.adapter.CustomAdapter
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.WellnessRecordResponse
+import nus.iss.wellnessapp.storage.TokenManager
 
 class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     private var lastView: View? = null  // track last selected item
@@ -65,7 +66,8 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
             showLoading(true)
             try {
 
-                val response = RetrofitClient.recordApi.getRecordsByUserId(1L)
+//              val response = RetrofitClient.recordApi.getRecordsByUserId(1L)
+                val response = RetrofitClient.recordApi.getRecordsByUserId(TokenManager.getUserId())
 
                 if (response.isSuccessful) {
                     records = response.body() ?: emptyList()

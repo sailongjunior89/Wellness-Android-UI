@@ -55,6 +55,32 @@ class LogCategoryActivity : AppCompatActivity() {
             InputType.TYPE_CLASS_NUMBER
 
         val txtHelper = findViewById<TextView>(R.id.txtHelper)
+
+        // Calories box is hidden by default; only the exercise screen shows it
+        val etCalories = findViewById<EditText>(R.id.etCalories)
+        if (category == "exercise") {
+            etCalories.visibility = View.VISIBLE
+        }
+
+// selectedDate holds the chosen date; starts as today
+        val etRecordDate = findViewById<EditText>(R.id.etRecordDate)
+        var selectedDate = java.time.LocalDate.now()
+        etRecordDate.setText(selectedDate.toString())
+
+        etRecordDate.setOnClickListener {
+            // the dialog counts months from 0, LocalDate from 1 — hence +1 and -1
+            android.app.DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    selectedDate = java.time.LocalDate.of(year, month + 1, dayOfMonth)
+                    etRecordDate.setText(selectedDate.toString())
+                },
+                selectedDate.year,
+                selectedDate.monthValue - 1,
+                selectedDate.dayOfMonth
+            ).show()
+        }
+
         if (category == "mood") {
             txtHelper.visibility = View.VISIBLE
             txtHelper.text = "0–2 Low · 3–5 Content · 6–8 Good · 9–10 Excellent"
@@ -85,22 +111,26 @@ class LogCategoryActivity : AppCompatActivity() {
                 Toast.makeText(this, "Mood must be 0-10", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            saveRecord(category, value, config)
+            saveRecord(category, value, config, etCalories.text.toString().toDoubleOrNull(), selectedDate.toString())
         }
     }
 
-    private fun saveRecord(category: String, value: Double, config: CategoryConfig) {
+    private fun saveRecord(category: String, value: Double, config: CategoryConfig,
+                           calories: Double?, recordDate: String) {
         val api = RetrofitClient.recordApi
 
         val record = WellnessRecordRequest(
             TokenManager.getUserId(),
             category,
             value,
+            // calories only applies to exercise; other categories send null
+            caloriesBurned = if (category == "exercise") calories else null,
             unit = config.unit,
             // exercise stores its minutes in durationMinutes too (dashboard reads that field)
             durationMinutes = if (category == "exercise") value.toInt() else null,
-            recordDate = java.time.LocalDate.now().toString()
+            recordDate = recordDate
         )
+// ... the api.addRecord(record).enqueue block below stays exactly the same
 
         api.addRecord(record).enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
