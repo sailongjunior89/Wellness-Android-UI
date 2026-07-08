@@ -80,5 +80,7 @@ dependencies {
     // Retrofit networking core & Gson parsing converter
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Notification
+    implementation("androidx.work:work-runtime-ktx:2.10.2")
 
 }

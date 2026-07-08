@@ -83,6 +83,9 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, ListViewActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnNotificationSetting).setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+        }
         // Cecil
         //findViewById<TextView>(R.id.txtHistoricalTrendsHeader).setOnClickListener {
         //    val intent = Intent(this, HistoryTrendActivity::class.java)
