@@ -17,8 +17,8 @@ import nus.iss.wellnessapp.storage.TokenManager
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import nus.iss.wellnessapp.notification.NotificationHelper
 import nus.iss.wellnessapp.notification.NotificationPermissionHelper
+import nus.iss.wellnessapp.notification.PreferenceHelper
 import nus.iss.wellnessapp.notification.ReminderScheduler
-import nus.iss.wellnessapp.storage.PreferenceHelper
 
 //author: Junior
 
@@ -132,8 +132,6 @@ class LoginActivity : AppCompatActivity() {
                     // Tan Pang Wee : Prompt Notification permission before go to dashboard
                     PreferenceHelper.initialize(this@LoginActivity)
                     NotificationHelper.createNotificationChannel(this@LoginActivity)
-                    val stepsInterval = PreferenceHelper.getStepsInterval(this@LoginActivity)
-                    Toast.makeText(this@LoginActivity, "${stepsInterval}", Toast.LENGTH_SHORT).show()
                     NotificationPermissionHelper.requestOrRun(this@LoginActivity) {
                         scheduleRemindersAndGoDashboard()
                     }
@@ -183,15 +181,18 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun scheduleRemindersAndGoDashboard() {
-        Log.d("PWT", "scheduleRemindersAndGoDashboard")
+//        Log.d("PWT", "scheduleRemindersAndGoDashboard")
+        if (PreferenceHelper.isReminderScheduled(this)) {
+            Log.d("PWT", "Reminders already scheduled")
+            return
+        }
         ReminderScheduler.scheduleOneTimeStepsReminder(this)
         val stepsInterval = PreferenceHelper.getStepsInterval(this)
-        var sleepHr = PreferenceHelper.getSleepHour(this)
+        val sleepHr = PreferenceHelper.getSleepHour(this)
         val sleepMin  = PreferenceHelper.getSleepMinute(this)
-//        Toast.makeText(this, "${stepsInterval} ${sleepHr} ${sleepMin}", Toast.LENGTH_SHORT).show()
         ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
         ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", sleepHr, sleepMin)
-
+        PreferenceHelper.setReminderScheduled(this, true)
         startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
         finish()
     }

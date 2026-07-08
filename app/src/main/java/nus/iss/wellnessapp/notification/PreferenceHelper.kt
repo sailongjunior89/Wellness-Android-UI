@@ -1,4 +1,4 @@
-package nus.iss.wellnessapp.storage
+package nus.iss.wellnessapp.notification
 
 import android.content.Context
 
@@ -70,5 +70,23 @@ object PreferenceHelper {
         return prefs.getInt("sleep_minute", 30)
     }
 
+    fun isReminderScheduled(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(
+            "notification_settings",
+            Context.MODE_PRIVATE
+        )
+        return prefs.getBoolean("reminder_scheduled", false)
+    }
+
+    fun setReminderScheduled(context: Context, scheduled: Boolean) {
+        val prefs = context.getSharedPreferences(
+            "notification_settings",
+            Context.MODE_PRIVATE
+        )
+
+        prefs.edit()
+            .putBoolean("reminder_scheduled", scheduled)
+            .apply()
+    }
 }
 
