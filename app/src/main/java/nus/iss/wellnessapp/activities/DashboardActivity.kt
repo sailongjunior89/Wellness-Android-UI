@@ -92,15 +92,6 @@ class DashboardActivity : AppCompatActivity() {
         initViews()
         initRetrofit()
 
-        // Retrieve the active logged-in user's ID from TokenManager
-        //val currentUserId = TokenManager.getUserId()
-
-        // Fetch dashboard statistics dynamically for the authenticated user
-        //fetchDashboardData(userId = currentUserId.toInt())
-        fetchDashboardData()
-
-        // Load AI recommendation separately (Htet Nandar)
-        loadRecommendation()
 
         //logout: Junior
         imgProfile = findViewById(R.id.imgProfile)
