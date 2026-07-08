@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 import kotlinx.coroutines.launch
 
@@ -36,20 +37,12 @@ import java.util.Locale
 
 class RegisterStep2Activity : AppCompatActivity() {
 
-    //==========================================
-    // Information from RegisterActivity
-    //==========================================
-
+    //Information from RegisterActivity
     private lateinit var username: String
     private lateinit var email: String
     private lateinit var password: String
 
-    //==========================================
     // UI Controls
-    //==========================================
-    private lateinit var etUsername: TextInputEditText
-    private lateinit var etEmail: TextInputEditText
-
     private lateinit var etFirstName: TextInputEditText
     private lateinit var etLastName: TextInputEditText
     private lateinit var etDob: EditText
@@ -60,6 +53,12 @@ class RegisterStep2Activity : AppCompatActivity() {
     private lateinit var spGender: Spinner
     private lateinit var spFitnessGoal: Spinner
 
+    private lateinit var layoutPassword: TextInputLayout
+    private lateinit var layoutConfirmPassword: TextInputLayout
+
+    private lateinit var etPassword: TextInputEditText
+    private lateinit var etConfirmPassword: TextInputEditText
+
     private lateinit var btnRegister: MaterialButton
 
     private lateinit var progressBar: ProgressBar
@@ -68,20 +67,15 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     private var isUpdateMode = false
 
-    //==========================================
-    // onCreate
-    //==========================================
 
+    // onCreate
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_register_step2)
 
-        //------------------------------------------
         // Receive data from RegisterActivity
-        //------------------------------------------
-
         username = intent.getStringExtra("username") ?: ""
 
         email = intent.getStringExtra("email") ?: ""
@@ -90,13 +84,7 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         isUpdateMode = intent.getStringExtra("MODE") == "UPDATE"
 
-        //------------------------------------------
         // Controls
-        //------------------------------------------
-
-        etUsername = findViewById(R.id.etUsername)
-        etEmail = findViewById(R.id.etEmail)
-
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
         etDob = findViewById(R.id.etDob)
@@ -107,32 +95,43 @@ class RegisterStep2Activity : AppCompatActivity() {
         spGender = findViewById(R.id.spGender)
         spFitnessGoal = findViewById(R.id.spFitnessGoal)
 
+        layoutPassword = findViewById(R.id.layoutPassword)
+        layoutConfirmPassword = findViewById(R.id.layoutConfirmPassword)
+
+        etPassword = findViewById(R.id.etPassword)
+        etConfirmPassword = findViewById(R.id.etConfirmPassword)
+
         btnRegister = findViewById(R.id.btnRegister)
 
         progressBar = findViewById(R.id.progressBar)
 
-        //------------------------------------------
         // Initialize
-        //------------------------------------------
-
         setupGenderSpinner()
 
         setupFitnessGoalSpinner()
 
         setupDatePicker()
 
+        // Update Mode
         if (isUpdateMode) {
+
+            layoutPassword.visibility = View.VISIBLE
+            layoutConfirmPassword.visibility = View.VISIBLE
 
             btnRegister.text = "UPDATE"
 
             loadProfile()
 
+        } else {
+
+            layoutPassword.visibility = View.GONE
+            layoutConfirmPassword.visibility = View.GONE
+
+            btnRegister.text = "SUBMIT"
         }
 
-        //------------------------------------------
-        // Register Button
-        //------------------------------------------
 
+        // Register OnClickListener
         btnRegister.setOnClickListener {
 
             if (!validateInput()) {
@@ -151,10 +150,8 @@ class RegisterStep2Activity : AppCompatActivity() {
         }
     }
 
-    //====================================================
-    // Gender Spinner
-    //====================================================
 
+    // Gender Spinner
     private fun setupGenderSpinner() {
 
         val adapter = ArrayAdapter(
@@ -166,10 +163,7 @@ class RegisterStep2Activity : AppCompatActivity() {
         spGender.adapter = adapter
     }
 
-    //====================================================
     // Fitness Goal Spinner
-    //====================================================
-
     private fun setupFitnessGoalSpinner() {
 
         val adapter = ArrayAdapter(
@@ -181,10 +175,7 @@ class RegisterStep2Activity : AppCompatActivity() {
         spFitnessGoal.adapter = adapter
     }
 
-    //====================================================
     // Date Picker
-    //====================================================
-
     private fun setupDatePicker() {
 
         etDob.setOnClickListener {
@@ -210,10 +201,7 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
-    //====================================================
     // Update Date
-    //====================================================
-
     private fun updateDate() {
 
         val sdf = SimpleDateFormat(
@@ -227,10 +215,8 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
-    //====================================================
-    // Validate Input
-    //====================================================
 
+    // Validate Input
     private fun validateInput(): Boolean {
 
         if (etFirstName.text.toString().trim().isEmpty()) {
@@ -295,13 +281,30 @@ class RegisterStep2Activity : AppCompatActivity() {
 
         }
 
+        val password = etPassword.text.toString().trim()
+        val confirmPassword = etConfirmPassword.text.toString().trim()
+
+        // Only validate when user wants to change password
+        if (password.isNotEmpty()) {
+
+            if (confirmPassword.isEmpty()) {
+
+                etConfirmPassword.error = "Confirm Password is required"
+                etConfirmPassword.requestFocus()
+                return false
+            }
+
+            if (password != confirmPassword) {
+
+                etConfirmPassword.error = "Passwords do not match"
+                etConfirmPassword.requestFocus()
+                return false
+            }
+        }
+
         return true
 
     }
-
-    //====================================================
-    // Loading
-    //====================================================
 
     private fun showLoading(show: Boolean) {
 
@@ -313,10 +316,8 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
-    //====================================================
-    // Login After Registration
-    //====================================================
 
+    // Login After Registration
     private fun loginAfterRegister() {
 
         lifecycleScope.launch {
@@ -351,10 +352,7 @@ class RegisterStep2Activity : AppCompatActivity() {
                         return@launch
                     }
 
-                    //----------------------------------------
                     // Save JWT Information
-                    //----------------------------------------
-
                     TokenManager.saveToken(loginResponse.token)
 
                     TokenManager.saveUserId(loginResponse.userId)
@@ -362,10 +360,6 @@ class RegisterStep2Activity : AppCompatActivity() {
                     TokenManager.saveUsername(loginResponse.username)
 
                     TokenManager.saveEmail(loginResponse.email)
-
-                    //----------------------------------------
-                    // Save Profile
-                    //----------------------------------------
 
                     updateProfile()
 
@@ -398,16 +392,14 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
-    //====================================================
-    // Update Profile
-    //====================================================
 
+    // Update Profile
     private fun updateProfile() {
 
         lifecycleScope.launch {
 
             try {
-
+                val newPassword = etPassword.text.toString().trim()
                 val request = UserProfileRequest(
 
                     firstName = etFirstName.text.toString().trim(),
@@ -424,7 +416,13 @@ class RegisterStep2Activity : AppCompatActivity() {
 
                     weightKg = etWeight.text.toString().toDouble(),
 
-                    fitnessGoal = spFitnessGoal.selectedItem as FitnessGoal
+                    fitnessGoal = spFitnessGoal.selectedItem as FitnessGoal,
+
+                    newPassword =
+                        if (newPassword.isBlank())
+                            null
+                        else
+                            newPassword
 
                 )
 
@@ -477,10 +475,7 @@ class RegisterStep2Activity : AppCompatActivity() {
 
     }
 
-    //====================================================
     // Open Dashboard
-    //====================================================
-
     private fun openDashboard() {
 
         val intent = Intent(
@@ -514,9 +509,6 @@ class RegisterStep2Activity : AppCompatActivity() {
                 if (response.isSuccessful) {
 
                     val profile = response.body() ?: return@launch
-
-                    etUsername.setText(profile.username)
-                    etEmail.setText(TokenManager.getEmail())
 
                     etFirstName.setText(profile.firstName)
                     etLastName.setText(profile.lastName)
