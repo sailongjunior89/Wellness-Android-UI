@@ -128,7 +128,18 @@ class ChatActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_chat      -> true
-                R.id.nav_dashboard -> { finish(); false }
+                R.id.nav_dashboard -> {
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    false
+                }
+                R.id.nav_history -> {
+                    val intent = Intent(this, HistoryTrendActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    false
+                }
                 else               -> false
             }
         }
