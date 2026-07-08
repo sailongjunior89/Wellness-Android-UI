@@ -184,7 +184,8 @@ class LoginActivity : AppCompatActivity() {
 //        Log.d("PWT", "scheduleRemindersAndGoDashboard")
         if (PreferenceHelper.isReminderScheduled(this)) {
             Log.d("PWT", "Reminders already scheduled")
-            return
+            startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
+            finish()
         }
         ReminderScheduler.scheduleOneTimeStepsReminder(this)
         val stepsInterval = PreferenceHelper.getStepsInterval(this)

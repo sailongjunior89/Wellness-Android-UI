@@ -22,6 +22,7 @@ object ReminderScheduler {
                 interval.toLong(),
                 TimeUnit.MINUTES
             )
+                .setInitialDelay(interval.toLong(), TimeUnit.MINUTES)
                 .setInputData(
                     workDataOf("TYPE" to "Steps")
                 )
@@ -55,7 +56,7 @@ object ReminderScheduler {
 
         val exerciseRequest =
             OneTimeWorkRequestBuilder<ReminderWorker>()
-                .setInitialDelay(60, TimeUnit.SECONDS)
+                .setInitialDelay(70, TimeUnit.SECONDS)
                 .setInputData(
                     workDataOf("TYPE" to "Exercise")
                 )

@@ -22,26 +22,41 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Interval"
-            android:textSize="24sp" />
+            android:text="🚶 Steps Reminder"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"/>
 
         <Spinner
             android:id="@+id/spStepsInterval"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp" />
+            android:text="💧 Water Reminder"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"/>
 
-                <Spinner
-                    android:id="@+id/spWaterInterval"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+        <Spinner
+            android:id="@+id/spWaterInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-                <Spinner
-                    android:id="@+id/spMoodInterval"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="😊 Mood Reminder"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/spMoodInterval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/btnSleepTime"
