@@ -24,6 +24,6 @@ class ReminderReceiver : BroadcastReceiver() {
             title,
             message
         )
-        Log.d("PWT", "ReminderReceiver showNotification done")
+//        Log.d("PWT", "ReminderReceiver showNotification done")
     }
 }

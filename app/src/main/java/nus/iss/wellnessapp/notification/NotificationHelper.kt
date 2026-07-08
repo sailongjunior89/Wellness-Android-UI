@@ -82,9 +82,9 @@ object NotificationHelper {
             Log.d("PWT", "NotificationHelper Permission denied")
             return
         }
-        Log.d("PWT", "NotificationHelper Permission granted")
+//        Log.d("PWT", "NotificationHelper Permission granted")
         NotificationManagerCompat.from(context)
             .notify(notificationId, builder.build())
-        Log.d("PWT", "NotificationHelper DONE")
+//        Log.d("PWT", "NotificationHelper DONE")
     }
 }

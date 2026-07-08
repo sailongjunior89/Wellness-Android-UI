@@ -22,6 +22,7 @@ object ReminderScheduler {
                 interval.toLong(),
                 TimeUnit.MINUTES
             )
+                .setInitialDelay(interval.toLong(), TimeUnit.MINUTES)
                 .setInputData(
                     workDataOf("TYPE" to "Steps")
                 )
@@ -55,7 +56,7 @@ object ReminderScheduler {
 
         val exerciseRequest =
             OneTimeWorkRequestBuilder<ReminderWorker>()
-                .setInitialDelay(60, TimeUnit.SECONDS)
+                .setInitialDelay(70, TimeUnit.SECONDS)
                 .setInputData(
                     workDataOf("TYPE" to "Exercise")
                 )
@@ -65,7 +66,7 @@ object ReminderScheduler {
         workManager.enqueue(waterRequest)
         workManager.enqueue(moodRequest)
         workManager.enqueue(exerciseRequest)
-        Log.d("PWT", "work enqueue")
+//        Log.d("PWT", "work enqueue")
     }
 
     fun scheduleReminderAt(
@@ -74,8 +75,8 @@ object ReminderScheduler {
         hour: Int,
         minute: Int
     ) {
-//        Log.d("PWT", "ScheduleReminderAt Start")
-        Log.d("PWT", "ScheduleReminderAt Start ${hour} ${minute}")
+        Log.d("PWT", "ScheduleReminderAt Start")
+//        Log.d("PWT", "ScheduleReminderAt Start ${hour} ${minute}")
 //        val calendar = Calendar.getInstance().apply {
 //            set(Calendar.HOUR_OF_DAY, hour)
 //            set(Calendar.MINUTE, minute)
@@ -125,6 +126,6 @@ object ReminderScheduler {
             calendar.timeInMillis,
             pendingIntent
         )
-        Log.d("PWT", "scheduleReminderAt done")
+//        Log.d("PWT", "scheduleReminderAt done")
     }
 }
