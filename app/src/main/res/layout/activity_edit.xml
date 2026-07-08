@@ -189,6 +189,15 @@
                 android:text="Update"
                 android:layout_marginTop="12dp" />
 
+            <Button
+                android:id="@+id/btnDeleteRecord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#D32F2F"
+                android:textColor="#FFFFFF" />
+
             <TextView
                 android:id="@+id/txtRecordId"
                 android:layout_width="wrap_content"
