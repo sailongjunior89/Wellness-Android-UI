@@ -496,6 +496,14 @@
                 app:icon="@drawable/ic_assignment"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNotificationSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notification"
+                app:icon="@drawable/ic_notification"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"/>
         </LinearLayout>
     </ScrollView>
 

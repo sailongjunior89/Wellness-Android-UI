@@ -15,6 +15,10 @@ import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.LoginRequest
 import nus.iss.wellnessapp.storage.TokenManager
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import nus.iss.wellnessapp.notification.NotificationHelper
+import nus.iss.wellnessapp.notification.NotificationPermissionHelper
+import nus.iss.wellnessapp.notification.ReminderScheduler
+import nus.iss.wellnessapp.storage.PreferenceHelper
 
 //author: Junior
 
@@ -116,14 +120,28 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    startActivity(
-                        Intent(
-                            this@LoginActivity,
-                            DashboardActivity::class.java
-                        )
-                    )
+//                    startActivity(
+//                        Intent(
+//                            this@LoginActivity,
+//                            DashboardActivity::class.java
+//                        )
+//                    )
+//
+//                    finish()
 
-                    finish()
+                    // Tan Pang Wee : Prompt Notification permission before go to dashboard
+                    PreferenceHelper.initialize(this@LoginActivity)
+                    NotificationHelper.createNotificationChannel(this@LoginActivity)
+                    val stepsInterval = PreferenceHelper.getStepsInterval(this@LoginActivity)
+                    Toast.makeText(this@LoginActivity, "${stepsInterval}", Toast.LENGTH_SHORT).show()
+                    NotificationPermissionHelper.requestOrRun(this@LoginActivity) {
+                        val stepsInterval = PreferenceHelper.getStepsInterval(this@LoginActivity)
+//                        val waterInterval = PreferenceHelper.getWaterInterval(this)
+//                        val moodInterval = PreferenceHelper.getMoodInterval(this)
+//                        val sleepHour = PreferenceHelper.getSleepHour(this)
+//                        val sleepMinute = PreferenceHelper.getSleepMinute(this)
+                        scheduleRemindersAndGoDashboard()
+                    }
 
                 } else {
 
@@ -150,5 +168,37 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    }
+
+    // Tan Pang Wee Notification
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        NotificationPermissionHelper.handleResult(
+            this,
+            requestCode,
+            grantResults
+        ) {
+            scheduleRemindersAndGoDashboard()
+        }
+    }
+
+    private fun scheduleRemindersAndGoDashboard() {
+        Log.d("PWT", "scheduleRemindersAndGoDashboard")
+        ReminderScheduler.scheduleOneTimeStepsReminder(this)
+        val stepsInterval = PreferenceHelper.getStepsInterval(this)
+        var sleepHr = PreferenceHelper.getSleepHour(this)
+        val sleepMin  = PreferenceHelper.getSleepMinute(this)
+        Toast.makeText(this, "${stepsInterval} ${sleepHr} ${sleepMin}", Toast.LENGTH_SHORT).show()
+        ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
+//        ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", 12, 45)
+        ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", sleepHr, sleepMin)
+
+        startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
+        finish()
     }
 }

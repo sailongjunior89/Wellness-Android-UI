@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -27,35 +28,35 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.RegisterActivity" />
-
-        <activity
-            android:name=".activities.RegisterStep2Activity" />
-
+        <activity android:name=".activities.RegisterStep2Activity" />
         <activity android:name=".activities.ListViewActivity" />
-        
         <activity android:name=".activities.EditActivity" />
-
         <activity android:name=".activities.DeleteActivity" />
-
-        <activity android:name=".activities.DashboardActivity"
-            android:exported="true"/>
-
+        <activity
+            android:name=".activities.DashboardActivity"
+            android:exported="true" />
         <activity
             android:name=".activities.ChatActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name=".activities.HistoryTrendActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        
-<!--Author: Si Hua, Why: Android refuses to launch unregistered activities. So add this-->
+
+        <!-- Author: Si Hua, Why: Android refuses to launch unregistered activities. So add this -->
         <activity android:name=".activities.AddRecordActivity" />
         <activity android:name=".activities.CategoryPickerActivity" />
         <activity android:name=".activities.LogCategoryActivity" />
 
+        <receiver
+            android:name=".notification.ReminderReceiver"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
-
