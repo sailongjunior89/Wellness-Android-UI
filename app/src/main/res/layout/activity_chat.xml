@@ -77,11 +77,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@null"
                 android:hint="Ask about your wellness…"
                 android:imeOptions="actionSend"
                 android:inputType="textMultiLine|textCapSentences|textImeMultiLine"
                 android:maxLines="4"
+                android:minLines="1"
+                android:scrollbars="vertical"
+                android:overScrollMode="always"
                 android:paddingHorizontal="8dp"
                 android:textSize="15sp" />
 
