@@ -64,8 +64,8 @@ object ReminderScheduler {
 
         val workManager = WorkManager.getInstance(context)
         workManager.enqueue(waterRequest)
-        workManager.enqueue(moodRequest)
-        workManager.enqueue(exerciseRequest)
+//        workManager.enqueue(moodRequest)
+//        workManager.enqueue(exerciseRequest)
 //        Log.d("PWT", "work enqueue")
     }
 
