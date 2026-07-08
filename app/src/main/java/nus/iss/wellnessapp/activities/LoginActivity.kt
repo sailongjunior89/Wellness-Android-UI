@@ -135,11 +135,6 @@ class LoginActivity : AppCompatActivity() {
                     val stepsInterval = PreferenceHelper.getStepsInterval(this@LoginActivity)
                     Toast.makeText(this@LoginActivity, "${stepsInterval}", Toast.LENGTH_SHORT).show()
                     NotificationPermissionHelper.requestOrRun(this@LoginActivity) {
-                        val stepsInterval = PreferenceHelper.getStepsInterval(this@LoginActivity)
-//                        val waterInterval = PreferenceHelper.getWaterInterval(this)
-//                        val moodInterval = PreferenceHelper.getMoodInterval(this)
-//                        val sleepHour = PreferenceHelper.getSleepHour(this)
-//                        val sleepMinute = PreferenceHelper.getSleepMinute(this)
                         scheduleRemindersAndGoDashboard()
                     }
 
@@ -193,9 +188,8 @@ class LoginActivity : AppCompatActivity() {
         val stepsInterval = PreferenceHelper.getStepsInterval(this)
         var sleepHr = PreferenceHelper.getSleepHour(this)
         val sleepMin  = PreferenceHelper.getSleepMinute(this)
-        Toast.makeText(this, "${stepsInterval} ${sleepHr} ${sleepMin}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "${stepsInterval} ${sleepHr} ${sleepMin}", Toast.LENGTH_SHORT).show()
         ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
-//        ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", 12, 45)
         ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", sleepHr, sleepMin)
 
         startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
