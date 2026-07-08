@@ -16,6 +16,8 @@ data class UserProfileRequest(
 
     val weightKg: Double,
 
-    val fitnessGoal: FitnessGoal
+    val fitnessGoal: FitnessGoal,
+
+    val newPassword: String? = null
 
 )
