@@ -125,6 +125,65 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Quick action buttons: three equal-width buttons in one row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddRecord"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#6750A4"
+                    android:text="Add record"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@android:drawable/ic_input_add"
+                    app:iconGravity="top"
+                    app:iconTint="#FFFFFF"
+                    app:strokeColor="#E0E6ED" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUpdateRecord"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:backgroundTint="#6750A4"
+                    android:text="Manage records"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_assignment"
+                    app:iconGravity="top"
+                    app:iconTint="#FFFFFF"
+                    app:strokeColor="#E0E6ED" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNotificationSetting"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#6750A4"
+                    android:text="Notifications"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_notification"
+                    app:iconGravity="top"
+                    app:iconTint="#FFFFFF"
+                    app:strokeColor="#E0E6ED" />
+            </LinearLayout>
 
             <!-- Wellness Scores -->
 
@@ -519,30 +578,6 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
-
-            <Button
-                android:id="@+id/btnAddRecord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="＋ Add Record" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnUpdateRecord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Manage Records"
-                app:icon="@drawable/ic_assignment"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNotificationSetting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Notification"
-                app:icon="@drawable/ic_notification"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"/>
         </LinearLayout>
     </ScrollView>
 
