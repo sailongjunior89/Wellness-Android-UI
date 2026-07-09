@@ -12,3 +12,9 @@ data class WellnessRecordResponse(
     val recordDate: List<Int>, //work around as List due to backend
     val notes: String
 )
+
+fun WellnessRecordResponse.dateInt(): Int {
+    return recordDate[0] * 10000 +
+            recordDate[1] * 100 +
+            recordDate[2]
+}
