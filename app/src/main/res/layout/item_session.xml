@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical"
         android:src="@android:drawable/ic_dialog_info"
         android:contentDescription="Chat"
-        app:tint="#4CAF50" />
+        app:tint="#6750A4" />
 
     <LinearLayout
         android:layout_width="0dp"
