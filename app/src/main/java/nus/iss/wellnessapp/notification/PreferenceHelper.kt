@@ -88,5 +88,16 @@ object PreferenceHelper {
             .putBoolean("reminder_scheduled", scheduled)
             .apply()
     }
+
+    fun clearNotificationSettings(context: Context) {
+        val prefs = context.getSharedPreferences(
+            "notification_settings",
+            Context.MODE_PRIVATE
+        )
+
+        prefs.edit()
+            .clear()
+            .apply()
+    }
 }
 

@@ -49,16 +49,18 @@ class NotificationSetupActivity : AppCompatActivity() {
             Log.d("PWT", "Reminders already scheduled")
             startActivity(Intent(this, DashboardActivity::class.java))
             finish()
-        }
-        ReminderScheduler.scheduleOneTimeStepsReminder(this)
-        val stepsInterval = PreferenceHelper.getStepsInterval(this)
-        val sleepHr = PreferenceHelper.getSleepHour(this)
-        val sleepMin  = PreferenceHelper.getSleepMinute(this)
+        } else {
+            ReminderScheduler.scheduleOneTimeStepsReminder(this)
+            val stepsInterval = PreferenceHelper.getStepsInterval(this)
+            val sleepHr = PreferenceHelper.getSleepHour(this)
+            val sleepMin  = PreferenceHelper.getSleepMinute(this)
 //        ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
-        ReminderScheduler.scheduleReminderAt(this, "Sleep", sleepHr, sleepMin)
-        PreferenceHelper.setReminderScheduled(this, true)
-        startActivity(Intent(this, DashboardActivity::class.java))
-        finish()
+            ReminderScheduler.scheduleReminderAt(this, "Sleep", sleepHr, sleepMin)
+            PreferenceHelper.setReminderScheduled(this, true)
+            startActivity(Intent(this, DashboardActivity::class.java))
+            finish()
+        }
+
     }
 }
 

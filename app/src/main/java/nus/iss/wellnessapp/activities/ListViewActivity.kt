@@ -1,5 +1,6 @@
 package nus.iss.wellnessapp.activities
 // author : Tan Pang Wee
+import android.app.ProgressDialog.show
 import android.content.Intent
 import androidx.activity.enableEdgeToEdge
 import nus.iss.wellnessapp.R
@@ -10,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -86,8 +88,17 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
                             it.category.equals(category, ignoreCase = true)
                         }
                     }
+
                     val listView = findViewById<ListView>(R.id.listView)
                     listView.adapter = CustomAdapter(this@ListViewActivity, records)
+
+                    val tvNoRecord = findViewById<TextView>(R.id.txtViewNoRecords)
+                    if (records.size == 0 ){
+                        tvNoRecord.visibility = View.VISIBLE
+                    } else {
+                        tvNoRecord.visibility = View.GONE
+                    }
+
                 } else {
                     Log.e("PWT", response.errorBody()?.string() ?: "No error body")
                 }
