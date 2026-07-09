@@ -2,36 +2,25 @@ package nus.iss.wellnessapp.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.imageview.ShapeableImageView
 import kotlinx.coroutines.launch
 import nus.iss.wellnessapp.R
+import nus.iss.wellnessapp.api.DashboardApiService
 import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.databinding.ActivityDashboardBinding
-
-import android.widget.TextView
-import com.google.android.material.imageview.ShapeableImageView
-import nus.iss.wellnessapp.api.DashboardApiService
 import nus.iss.wellnessapp.model.DashboardResponse
 import nus.iss.wellnessapp.storage.TokenManager
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import android.widget.PopupMenu
-import androidx.appcompat.app.AlertDialog
-import nus.iss.wellnessapp.activities.LoginActivity
-
-import android.view.LayoutInflater
-import android.view.Gravity
-import android.widget.PopupWindow
-import nus.iss.wellnessapp.api.AuthInterceptor
-import nus.iss.wellnessapp.model.LogoutResponse
-import okhttp3.OkHttpClient
 import java.util.Locale
 
 class DashboardActivity : AppCompatActivity() {
@@ -45,6 +34,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var txtMood: TextView
     private lateinit var txtRecommendationTitle: TextView
     private lateinit var txtRecommendation: TextView
+    private lateinit var txtSeeMore: TextView
 
     private lateinit var txtAvgSteps: TextView
     private lateinit var txtAvgSleep: TextView
@@ -102,11 +92,6 @@ class DashboardActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnNotificationSetting).setOnClickListener {
             startActivity(Intent(this, NotificationActivity::class.java))
         }
-        // Cecil
-        //findViewById<TextView>(R.id.txtHistoricalTrendsHeader).setOnClickListener {
-        //    val intent = Intent(this, HistoryTrendActivity::class.java)
-        //    startActivity(intent)
-        //}
 
         initViews()
         initRetrofit()
@@ -126,6 +111,7 @@ class DashboardActivity : AppCompatActivity() {
         txtMood = findViewById(R.id.txtMood)
         txtRecommendationTitle = findViewById(R.id.txtRecommendationTitle)
         txtRecommendation = findViewById(R.id.txtRecommendation)
+        txtSeeMore = findViewById(R.id.txtSeeMore)
 
         txtAvgSteps = findViewById(R.id.txtAvgSteps)
         txtAvgSleep = findViewById(R.id.txtAvgSleep)
@@ -151,28 +137,7 @@ class DashboardActivity : AppCompatActivity() {
 
     }
 
-    private fun initRetrofit() { /*
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        apiService = retrofit.create(DashboardApiService::class.java) */
-
-        // Create the OkHttpClient and add your JWT interceptor
-        /*
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor(AuthInterceptor(this))
-            .build()
-
-        // Attach the client to your Retrofit Builder
-        val retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8080/") // Use 10.0.2.2 for Localhost inside Android Emulator
-            .client(okHttpClient) // <-- CRITICAL: This injects the JWT token!
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        apiService = retrofit.create(DashboardApiService::class.java) */
+    private fun initRetrofit() {
         apiService = RetrofitClient.dashboardApi
 
     }
@@ -200,7 +165,6 @@ class DashboardActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        //fetchDashboardData(TokenManager.getUserId().toInt())
         fetchDashboardData()
         loadRecommendation()
     }
@@ -252,19 +216,47 @@ class DashboardActivity : AppCompatActivity() {
     private fun loadRecommendation() {
         txtRecommendationTitle.text = ""
         txtRecommendation.text = "Loading your personalized wellness tip…"
+        txtRecommendation.maxLines = 1
+        txtSeeMore.visibility = android.view.View.GONE
+
         lifecycleScope.launch {
             try {
                 val rec = RetrofitClient.recommendationApi.getLatest()
                 txtRecommendationTitle.text = rec.title
+                txtRecommendation.maxLines = 1
                 txtRecommendation.text = rec.recommendation
+
+                // Show "See more" if the last visible line has an ellipsis
+                // (lineCount with maxLines=3 is always ≤ 3, so we check getEllipsisCount instead)
+                txtRecommendation.post {
+                    val layout = txtRecommendation.layout ?: return@post
+                    val lastLine = layout.lineCount - 1
+                    if (lastLine >= 0 && layout.getEllipsisCount(lastLine) > 0) {
+                        txtSeeMore.visibility = android.view.View.VISIBLE
+                    }
+                }
+
+                // Toggle expand / collapse inline
+                txtSeeMore.setOnClickListener {
+                    if (txtRecommendation.maxLines == 1) {
+                        txtRecommendation.maxLines = Int.MAX_VALUE  // show all
+                        txtSeeMore.text = "See less"
+                    } else {
+                        txtRecommendation.maxLines = 1             // collapse
+                        txtSeeMore.text = "See more"
+                    }
+                }
+
             } catch (e: HttpException) {
                 txtRecommendationTitle.text = ""
+                txtSeeMore.visibility = android.view.View.GONE
                 txtRecommendation.text = if (e.code() == 503)
                     "AI service is starting up, please check back in a moment."
                 else
                     "⚠️ Could not load recommendation (${e.code()})"
             } catch (e: Exception) {
                 txtRecommendationTitle.text = ""
+                txtSeeMore.visibility = android.view.View.GONE
                 txtRecommendation.text = "⚠️ ${e.message}"
             }
         }
