@@ -1,5 +1,5 @@
 package nus.iss.wellnessapp.activities
-
+// Author: Thiha Phone Naing
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log

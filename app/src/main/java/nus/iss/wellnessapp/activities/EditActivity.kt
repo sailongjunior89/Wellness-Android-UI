@@ -48,6 +48,8 @@ class EditActivity : AppCompatActivity() {
             updateRecord()
         }
 
+
+        // for delete Thiha Phone Naing
         binding.btnDeleteRecord.setOnClickListener {
             val intent = Intent(this, DeleteActivity::class.java)
             intent.putExtra("recordId", recordId)
