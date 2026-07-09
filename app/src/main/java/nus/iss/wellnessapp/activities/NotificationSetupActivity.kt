@@ -54,7 +54,7 @@ class NotificationSetupActivity : AppCompatActivity() {
         val stepsInterval = PreferenceHelper.getStepsInterval(this)
         val sleepHr = PreferenceHelper.getSleepHour(this)
         val sleepMin  = PreferenceHelper.getSleepMinute(this)
-        ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
+//        ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
         ReminderScheduler.scheduleReminderAt(this, "Sleep", sleepHr, sleepMin)
         PreferenceHelper.setReminderScheduled(this, true)
         startActivity(Intent(this, DashboardActivity::class.java))

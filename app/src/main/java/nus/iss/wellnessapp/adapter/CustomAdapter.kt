@@ -50,6 +50,9 @@ class CustomAdapter(private val context: Context,
         var rawDate = "${record.recordDate[0]}-${record.recordDate[1]}-${record.recordDate[2]}"
         textViewRecordDate.text = formatDate(rawDate)
         textViewValue.text = "${record.value} ${record.unit}"
+        if (record.category.lowercase() == "mood") {
+            textViewValue.text = "${record.value} (Level : ${record.unit})"
+        }
         return _view
     }
 
