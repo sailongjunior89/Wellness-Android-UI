@@ -120,21 +120,14 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-//                    startActivity(
-//                        Intent(
-//                            this@LoginActivity,
-//                            DashboardActivity::class.java
-//                        )
-//                    )
-//
-//                    finish()
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            NotificationSetupActivity::class.java
+                        )
+                    )
 
-                    // Tan Pang Wee : Prompt Notification permission before go to dashboard
-                    PreferenceHelper.initialize(this@LoginActivity)
-                    NotificationHelper.createNotificationChannel(this@LoginActivity)
-                    NotificationPermissionHelper.requestOrRun(this@LoginActivity) {
-                        scheduleRemindersAndGoDashboard()
-                    }
+                    finish()
 
                 } else {
 
@@ -161,40 +154,5 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }
         }
-    }
-
-    // Tan Pang Wee Notification
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        NotificationPermissionHelper.handleResult(
-            this,
-            requestCode,
-            grantResults
-        ) {
-            scheduleRemindersAndGoDashboard()
-        }
-    }
-
-    private fun scheduleRemindersAndGoDashboard() {
-//        Log.d("PWT", "scheduleRemindersAndGoDashboard")
-        if (PreferenceHelper.isReminderScheduled(this)) {
-            Log.d("PWT", "Reminders already scheduled")
-            startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
-            finish()
-        }
-        ReminderScheduler.scheduleOneTimeStepsReminder(this)
-        val stepsInterval = PreferenceHelper.getStepsInterval(this)
-        val sleepHr = PreferenceHelper.getSleepHour(this)
-        val sleepMin  = PreferenceHelper.getSleepMinute(this)
-        ReminderScheduler.scheduleStepsReminder(this, stepsInterval)
-        ReminderScheduler.scheduleReminderAt(this@LoginActivity, "Sleep", sleepHr, sleepMin)
-        PreferenceHelper.setReminderScheduled(this, true)
-        startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
-        finish()
     }
 }

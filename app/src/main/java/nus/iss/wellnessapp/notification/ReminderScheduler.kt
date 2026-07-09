@@ -48,7 +48,7 @@ object ReminderScheduler {
 
         val moodRequest =
             OneTimeWorkRequestBuilder<ReminderWorker>()
-                .setInitialDelay(45, TimeUnit.SECONDS)
+                .setInitialDelay(60, TimeUnit.SECONDS)
                 .setInputData(
                     workDataOf("TYPE" to "Mood")
                 )
@@ -56,7 +56,7 @@ object ReminderScheduler {
 
         val exerciseRequest =
             OneTimeWorkRequestBuilder<ReminderWorker>()
-                .setInitialDelay(70, TimeUnit.SECONDS)
+                .setInitialDelay(45, TimeUnit.SECONDS)
                 .setInputData(
                     workDataOf("TYPE" to "Exercise")
                 )
@@ -65,7 +65,7 @@ object ReminderScheduler {
         val workManager = WorkManager.getInstance(context)
         workManager.enqueue(waterRequest)
 //        workManager.enqueue(moodRequest)
-//        workManager.enqueue(exerciseRequest)
+        workManager.enqueue(exerciseRequest)
 //        Log.d("PWT", "work enqueue")
     }
 
@@ -127,5 +127,12 @@ object ReminderScheduler {
             pendingIntent
         )
 //        Log.d("PWT", "scheduleReminderAt done")
+    }
+
+    fun cancelAllReminders(context: Context) {
+        val workManager = WorkManager.getInstance(context)
+
+        workManager.cancelUniqueWork("steps_reminder")
+        workManager.cancelAllWork()   // if you're using unnamed one-time work
     }
 }
