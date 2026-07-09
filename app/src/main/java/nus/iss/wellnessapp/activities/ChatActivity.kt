@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -41,6 +44,26 @@ class ChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Edge-to-edge: let toolbar draw behind the status bar, then pad it down
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar) { v, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBar.top, v.paddingRight, v.paddingBottom)
+            insets
+        }
+        // Keep bottom nav above the gesture navigation bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
+            val navBar = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, navBar.bottom)
+            insets
+        }
+        // Drawer header — same status bar inset so "Conversations" clears the status bar
+        ViewCompat.setOnApplyWindowInsetsListener(binding.drawerHeader) { v, insets ->
+            val statusBar = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBar.top + 12.dpToPx(), v.paddingRight, v.paddingBottom)
+            insets
+        }
 
         setupToolbar()
         setupDrawer()
@@ -319,4 +342,7 @@ class ChatActivity : AppCompatActivity() {
         else ->
             "Something went wrong. Please try again."
     }
+
+    private fun Int.dpToPx(): Int =
+        (this * resources.displayMetrics.density).toInt()
 }
