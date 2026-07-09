@@ -438,7 +438,7 @@ class HistoryTrendActivity : AppCompatActivity() {
                         loadChartData(chartDistance, "#1A73E8", distanceData, currentFilter)
                         loadChartData(chartSleep, "#9C27B0", sleepData, currentFilter)
                         loadChartData(chartWater, "#00B0FF", waterData, currentFilter)
-                        loadChartData(chartExercise, "#4CAF50", exerciseData, currentFilter)
+                        loadChartData(chartExercise, "#6750A4", exerciseData, currentFilter)
                     }
                 }
 
