@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <!-- Main content -->
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -15,6 +16,15 @@
         android:layout_marginTop="10dp"
         android:paddingTop="20dp"
         android:dividerHeight="1dp"/>
+
+    <TextView
+        android:id="@+id/txtViewNoRecords"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No Record"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="18sp" />
 
     <FrameLayout
         android:id="@+id/btnBack"
