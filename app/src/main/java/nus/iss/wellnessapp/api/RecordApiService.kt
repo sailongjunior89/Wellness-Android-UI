@@ -6,6 +6,7 @@ import nus.iss.wellnessapp.model.WellnessRecordResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -34,6 +35,11 @@ interface RecordApiService {
         @Path("id") id: Long,
         @Body request: WellnessRecordRequest
     ): Response<WellnessRecordResponse>
+
+    @DELETE("api/wellness/{id}")
+    suspend fun deleteRecord(
+        @Path("id") id: Long
+    ): Response<Void>
 
 }
 

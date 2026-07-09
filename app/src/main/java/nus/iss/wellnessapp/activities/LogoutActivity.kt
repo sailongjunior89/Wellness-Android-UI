@@ -3,6 +3,7 @@ package nus.iss.wellnessapp.activities
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import nus.iss.wellnessapp.notification.ReminderScheduler
 import nus.iss.wellnessapp.storage.TokenManager
 
 //author: Junior
@@ -13,6 +14,9 @@ class LogoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         TokenManager.clearToken()
+
+        // Notification - Tan Pang Wee
+        ReminderScheduler.cancelAllReminders(this)
 
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags =

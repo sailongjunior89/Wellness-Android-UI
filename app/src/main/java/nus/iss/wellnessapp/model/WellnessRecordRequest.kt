@@ -12,6 +12,6 @@ data class WellnessRecordRequest(
     val notes: String? = null
 )
 
-// Why: Retrofit + Gson converts this Kotlin object into the JSON body of your POST request.
-// Field names must match what your Spring backend's DTO expects
+// Why: Retrofit + Gson converts this Kotlin object into the JSON body of POST request.
+// Field names must match what Spring backend's DTO expects
 // — check the backend's controller/DTO class for the exact names.

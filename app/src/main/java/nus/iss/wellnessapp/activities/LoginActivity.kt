@@ -15,6 +15,10 @@ import nus.iss.wellnessapp.api.RetrofitClient
 import nus.iss.wellnessapp.model.LoginRequest
 import nus.iss.wellnessapp.storage.TokenManager
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import nus.iss.wellnessapp.notification.NotificationHelper
+import nus.iss.wellnessapp.notification.NotificationPermissionHelper
+import nus.iss.wellnessapp.notification.PreferenceHelper
+import nus.iss.wellnessapp.notification.ReminderScheduler
 
 //author: Junior
 
@@ -119,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
                     startActivity(
                         Intent(
                             this@LoginActivity,
-                            DashboardActivity::class.java
+                            NotificationSetupActivity::class.java
                         )
                     )
 

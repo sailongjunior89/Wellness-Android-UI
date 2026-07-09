@@ -32,6 +32,7 @@ import android.widget.PopupWindow
 import nus.iss.wellnessapp.api.AuthInterceptor
 import nus.iss.wellnessapp.model.LogoutResponse
 import okhttp3.OkHttpClient
+import java.util.Locale
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -44,14 +45,29 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var txtMood: TextView
     private lateinit var txtRecommendationTitle: TextView
     private lateinit var txtRecommendation: TextView
-    private lateinit var txtSteps: TextView
-    private lateinit var txtSleep: TextView
-    private lateinit var txtWater: TextView
-    private lateinit var txtExercise: TextView
+
     private lateinit var txtAvgSteps: TextView
     private lateinit var txtAvgSleep: TextView
     private lateinit var txtAvgWater: TextView
     private lateinit var txtAvgExercise: TextView
+
+    // Wellness Scores
+    private lateinit var txtOverallWellnessScores: TextView
+    private lateinit var txtStepsWellnessScores: TextView
+    private lateinit var txtSleepWellnessScores: TextView
+    private lateinit var txtWaterWellnessScores: TextView
+    private lateinit var txtExerciseWellnessScores: TextView
+
+    // Daily Stats & Dates
+    private lateinit var txtSteps: TextView
+    private lateinit var txtStepsDate: TextView
+    private lateinit var txtSleep: TextView
+    private lateinit var txtSleepDate: TextView
+    private lateinit var txtWater: TextView
+    private lateinit var txtWaterDate: TextView
+    private lateinit var txtExercise: TextView
+    private lateinit var txtExerciseDate: TextView
+
 
     //logout: Junior
     private lateinit var imgProfile: ShapeableImageView
@@ -83,6 +99,9 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(Intent(this, ListViewActivity::class.java))
         }
 
+        findViewById<Button>(R.id.btnNotificationSetting).setOnClickListener {
+            startActivity(Intent(this, NotificationActivity::class.java))
+        }
         // Cecil
         //findViewById<TextView>(R.id.txtHistoricalTrendsHeader).setOnClickListener {
         //    val intent = Intent(this, HistoryTrendActivity::class.java)
@@ -107,14 +126,29 @@ class DashboardActivity : AppCompatActivity() {
         txtMood = findViewById(R.id.txtMood)
         txtRecommendationTitle = findViewById(R.id.txtRecommendationTitle)
         txtRecommendation = findViewById(R.id.txtRecommendation)
-        txtSteps = findViewById(R.id.txtSteps)
-        txtSleep = findViewById(R.id.txtSleep)
-        txtWater = findViewById(R.id.txtWater)
-        txtExercise = findViewById(R.id.txtExercise)
+
         txtAvgSteps = findViewById(R.id.txtAvgSteps)
         txtAvgSleep = findViewById(R.id.txtAvgSleep)
         txtAvgWater = findViewById(R.id.txtAvgWater)
         txtAvgExercise = findViewById(R.id.txtAvgExercise)
+
+        // Daily Stats & Dates
+        txtSteps = findViewById(R.id.txtSteps)
+        txtStepsDate = findViewById(R.id.txtStepsDate)
+        txtSleep = findViewById(R.id.txtSleep)
+        txtSleepDate = findViewById(R.id.txtSleepDate)
+        txtWater = findViewById(R.id.txtWater)
+        txtWaterDate = findViewById(R.id.txtWaterDate)
+        txtExercise = findViewById(R.id.txtExercise)
+        txtExerciseDate = findViewById(R.id.txtExerciseDate)
+
+        // Wellness Scores
+        txtOverallWellnessScores = findViewById(R.id.txtOverallWellnessScores)
+        txtStepsWellnessScores = findViewById(R.id.txtStepsWellnessScores)
+        txtSleepWellnessScores = findViewById(R.id.txtSleepWellnessScores)
+        txtWaterWellnessScores = findViewById(R.id.txtWaterWellnessScores)
+        txtExerciseWellnessScores = findViewById(R.id.txtExerciseWellnessScores)
+
     }
 
     private fun initRetrofit() { /*
@@ -184,10 +218,35 @@ class DashboardActivity : AppCompatActivity() {
 
         // Historical Trends Group
         txtAvgSteps.text = String.format("%,.0f steps", data.avgSteps)
-        txtAvgSleep.text = "${data.avgSleepHours} hrs"
+        //txtAvgSleep.text = "${data.avgSleepHours} hrs"
+        txtAvgSleep.text = String.format("%.1f hrs", data.avgSleepHours ?: 0.0)
         txtAvgWater.text = String.format("%.1f L", data.avgWaterIntake ?: 0.0)
         txtAvgExercise.text = "${data.avgExerciseMinutes} mins"
+
+        // --- Wellness Scores Card ---
+        txtOverallWellnessScores.text = String.format(Locale.getDefault(),
+            "Overall Wellness Score: %d",data.overallWellnessScore ?: 0)
+
+        txtStepsWellnessScores.text = String.format(Locale.getDefault(),
+            "Steps Score: %d / 100", data.stepsScore ?: 0)
+
+        txtSleepWellnessScores.text = String.format(Locale.getDefault(),
+            "Sleep Duration Score: %d / 100", data.sleepScore ?: 0)
+
+        txtWaterWellnessScores.text = String.format(Locale.getDefault(),
+            "Water Score: %d / 100", data.waterScore ?: 0)
+
+        txtExerciseWellnessScores.text = String.format(Locale.getDefault(),
+            "Exercise Duration Score: %d / 100", data.exerciseScore ?: 0)
+
+        // --- Recent Activity Stats (Values + Dates) ---
+        txtStepsDate.text = data.stepsRecordDate ?: "No record"
+        txtSleepDate.text = data.sleepRecordDate ?: "No record"
+        txtWaterDate.text = data.waterRecordDate ?: "No record"
+        txtExerciseDate.text = data.exerciseRecordDate ?: "No record"
+
     }
+
 
     // ── AI Recommendation (Htet Nandar) ──────────────────────────────────────────
     private fun loadRecommendation() {
@@ -216,11 +275,6 @@ class DashboardActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> true
-
-                /*R.id.nav_dashboard ->{
-                    startActivity(Intent(this, DashboardActivity::class.java))// for dashboard
-                    true
-                }*/
 
                 R.id.nav_history -> {
                     startActivity(Intent(this, HistoryTrendActivity::class.java))

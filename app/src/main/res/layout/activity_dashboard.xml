@@ -82,36 +82,6 @@
                 android:layout_marginTop="2dp" />
 
 
-            <!-- Wellness Scores -->
-            <!--
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="10dp"
-                app:cardCornerRadius="30dp"
-                app:cardElevation="1dp">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp">
-
-                    <TextView
-                        android:id="@+id/txtWellnessScores"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="2dp"
-                        android:text="Wellness Scores :"
-                        android:textColor="#1A1A1A"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-            -->
-
             <!-- AI Recommendation Banner Card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
@@ -155,6 +125,71 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+
+            <!-- Wellness Scores -->
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="15dp"
+                app:cardCornerRadius="80dp"
+                app:cardElevation="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:id="@+id/txtOverallWellnessScores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="2dp"
+                        android:text="Overall Wellness Scores :"
+                        android:textColor="#1A1A1A"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtStepsWellnessScores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Steps Score: "
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/txtSleepWellnessScores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Sleep Duration Score: "
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/txtWaterWellnessScores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Water Score: "
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/txtExerciseWellnessScores"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Exercise Duration Score: "
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+
             <!-- ================= SECTION 1: DAILY STATS ================= -->
             <TextView
                 android:layout_width="wrap_content"
@@ -195,18 +230,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:layout_marginBottom="3dp"
                             android:text="Steps"
                             android:textColor="#1A1A1A"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-                <!--        <TextView
+                        <TextView
                             android:id="@+id/txtStepsDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today"
                             android:textColor="#757575"
                             android:textStyle="bold"
-                            android:textSize="11sp" /> -->
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -234,18 +270,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:layout_marginBottom="3dp"
                             android:text="Sleep"
                             android:textColor="#1A1A1A"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-                    <!--    <TextView
+                        <TextView
                             android:id="@+id/txtSleepDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today"
                             android:textColor="#757575"
                             android:textStyle="bold"
-                            android:textSize="11sp" /> -->
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -280,18 +317,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:layout_marginBottom="3dp"
                             android:text="Water"
                             android:textColor="#1A1A1A"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-                    <!--    <TextView
+                        <TextView
                             android:id="@+id/txtWaterDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today"
                             android:textColor="#757575"
                             android:textStyle="bold"
-                            android:textSize="11sp" /> -->
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -318,18 +356,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
+                            android:layout_marginBottom="3dp"
                             android:text="Exercise"
                             android:textColor="#1A1A1A"
                             android:textSize="16sp"
                             android:textStyle="bold" />
-                    <!--    <TextView
+                        <TextView
                             android:id="@+id/txtExerciseDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Today"
                             android:textColor="#757575"
                             android:textStyle="bold"
-                            android:textSize="11sp" /> -->
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -494,6 +533,14 @@
                 android:layout_height="wrap_content"
                 android:text="Manage Records"
                 app:icon="@drawable/ic_assignment"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNotificationSetting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notification"
+                app:icon="@drawable/ic_notification"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"/>
         </LinearLayout>
