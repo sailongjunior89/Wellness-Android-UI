@@ -13,23 +13,22 @@
         android:background="#F5F5F5"
         android:orientation="vertical">
 
-        <!-- Custom toolbar row: hamburger | title -->
         <LinearLayout
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:background="#4CAF50"
+            android:layout_height="wrap_content"
+            android:background="#6750A4"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
             <ImageButton
                 android:id="@+id/btnHamburger"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Open menu"
                 android:src="@drawable/ic_hamburger"
-                android:padding="16dp"
+                android:padding="12dp"
                 app:tint="#FFFFFF" />
 
             <TextView
@@ -41,6 +40,8 @@
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:paddingStart="4dp" />
 
         </LinearLayout>
@@ -91,7 +92,7 @@
                 android:id="@+id/btnSend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="#6750A4"
                 android:text="Send"
                 android:textColor="#FFFFFF" />
 
@@ -121,12 +122,12 @@
 
         <!-- Drawer header -->
         <LinearLayout
+            android:id="@+id/drawerHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#4CAF50"
+            android:background="#6750A4"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:paddingTop="32dp">
+            android:padding="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -144,7 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
-            android:backgroundTint="#4CAF50"
+            android:backgroundTint="#6750A4"
             android:text="+ New Chat"
             android:textColor="#FFFFFF" />
 

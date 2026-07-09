@@ -36,6 +36,7 @@ interface RecordApiService {
         @Body request: WellnessRecordRequest
     ): Response<WellnessRecordResponse>
 
+    // for delete Thiha Phone Naing
     @DELETE("api/wellness/{id}")
     suspend fun deleteRecord(
         @Path("id") id: Long
