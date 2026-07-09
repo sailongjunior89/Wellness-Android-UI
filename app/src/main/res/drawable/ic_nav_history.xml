@@ -4,20 +4,20 @@
     android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <!-- Top-left tile -->
+    <!-- Left bar (shortest) -->
     <path
         android:fillColor="@android:color/black"
-        android:pathData="M3,3 h8 v8 H3 z" />
-    <!-- Top-right tile -->
+        android:pathData="M5,17 h3 v-5 h-3 z" />
+    <!-- Middle bar (tallest) -->
     <path
         android:fillColor="@android:color/black"
-        android:pathData="M13,3 h8 v8 h-8 z" />
-    <!-- Bottom-left tile -->
+        android:pathData="M10.5,17 h3 v-11 h-3 z" />
+    <!-- Right bar (medium) -->
     <path
         android:fillColor="@android:color/black"
-        android:pathData="M3,13 h8 v8 H3 z" />
-    <!-- Bottom-right tile -->
+        android:pathData="M16,17 h3 v-7 h-3 z" />
+    <!-- Baseline -->
     <path
         android:fillColor="@android:color/black"
-        android:pathData="M13,13 h8 v8 h-8 z" />
+        android:pathData="M3,18.5 h18 v-1.5 h-18 z" />
 </vector>
