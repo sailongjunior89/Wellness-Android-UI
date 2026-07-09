@@ -67,7 +67,7 @@ class ListViewActivity : AppCompatActivity(), AdapterView.OnItemClickListener {
     }
 
     private fun filterByCategory(category: String) {
-        Toast.makeText(this, "${category}", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "${category}", Toast.LENGTH_SHORT).show()
         lifecycleScope.launch {
             showLoading(true)
             try {
